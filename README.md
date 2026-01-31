@@ -8,7 +8,7 @@ Laravelを使って作成したお問い合わせフリーマーケットアプ�
 # リポジトリをクローン
 git@github.com:YUKKE1009/fleamarket-app.git
 # ディレクトリ移動
-cd contact-form
+cd fleamarket-app
 # Dockerビルド＆起動
 docker-compose up -d --build
 # VSCodeで開く
