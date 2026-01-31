@@ -13,6 +13,7 @@ cd contact-form
 docker-compose up -d --build
 # VSCodeで開く
 code .
+```
 
 ### Laravel環境構築
 ```bash
