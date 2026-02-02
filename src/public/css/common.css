@@ -1,0 +1,74 @@
+/* 基本レイアウト */
+body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    background-color: #fff;
+    color: #333;
+}
+
+.header {
+    background-color: #000;
+    padding: 15px 0;
+}
+
+.header__inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+}
+
+/* ロゴのサイズ調整 */
+.header__logo img {
+    height: 30px;
+    /* デザインに合わせて調整してください */
+    display: block;
+}
+
+/* 検索バー */
+.header__search {
+    flex: 1;
+    margin: 0 40px;
+}
+
+.search-input {
+    width: 100%;
+    padding: 8px 12px;
+    border-radius: 4px;
+    border: none;
+    font-size: 14px;
+}
+
+/* ナビゲーション */
+.nav-list {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    gap: 20px;
+}
+
+.nav-link {
+    color: #fff;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+/* 出品ボタン（白抜き） */
+.btn-sell {
+    background-color: #fff;
+    color: #000 !important;
+    padding: 6px 20px;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.main-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.btn-sell:hover {
+    opacity: 0.8;
+}
