@@ -15,7 +15,7 @@ class CreateConditionsTable extends Migration
     {
         Schema::create('conditions', function (Blueprint $table) {
             $table->id();
-            $table->string('content'); // 状態名（例：良好）
+            $table->string('name'); // 状態名（例：良好）
             $table->timestamps();
         });
     }

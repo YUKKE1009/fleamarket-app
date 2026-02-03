@@ -3,4 +3,12 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ItemController;
 
+
+//商品一覧画面（トップ画面）（PG01）
 Route::get('/', [ItemController::class, 'index']);
+
+// 商品詳細画面 (PG05)
+Route::get('/item/{item_id}', [ItemController::class, 'show']);
+
+// コメント投稿（将来的な実装用）
+Route::post('/item/comment', [ItemController::class, 'storeComment'])->middleware('auth');

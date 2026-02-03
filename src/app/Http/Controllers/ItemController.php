@@ -3,18 +3,23 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Item; // Itemモデルを使う宣言
+use App\Models\Item;
 
 class ItemController extends Controller
 {
-    // トップページ（商品一覧）を表示するメソッド
+    // 商品一覧 (PG01)
     public function index()
     {
-        // データベースから全ての商品を取得
         $items = Item::all();
-
-        // resources/views/items/index.blade.php を表示する
-        // その際、取得した $items を 'items' という名前で渡す
         return view('items.index', compact('items'));
+    }
+
+    // 商品詳細 (PG05)
+    public function show($item_id)
+    {
+        $item = Item::with(['category', 'condition', 'comments.user.profile'])
+            ->findOrFail($item_id);
+
+        return view('items.show', compact('item'));
     }
 }

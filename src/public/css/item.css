@@ -1,69 +1,304 @@
-/* タブのスタイル */
-.item-tabs {
-    display: flex;
-    border-bottom: 1px solid #ccc;
-    margin-bottom: 20px;
+/* ==========================================
+   共通設定 & レスポンシブ基盤
+   ========================================== */
+
+.item-list__container,
+.item-detail__container {
+    width: 95%;
+    /* モバイル時の余白 */
+    max-width: 1200px;
+    /* 基本の最大幅 */
+    margin: 0 auto;
+    padding: 20px 0;
 }
 
-.tab-item {
-    margin-right: 30px;
-    padding: 10px 0;
+/* PCサイズ (1400px - 1540px) への対応：さらに幅を広げる */
+@media screen and (min-width: 1400px) {
+    .item-list__container {
+        max-width: 1400px;
+    }
+}
+
+/* リストタグの初期化（div乱用防止用） */
+.item-list__tab-list,
+.item-list__grid {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* ==========================================
+   商品一覧画面 (index.blade.php) 専用
+   ========================================== */
+
+.item-list__tabs {
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 30px;
+}
+
+.item-list__tab-list {
+    display: flex;
+    gap: 40px;
+}
+
+.item-list__tab-link {
+    display: block;
     text-decoration: none;
     color: #333;
     font-weight: bold;
+    padding-bottom: 10px;
+    transition: color 0.3s;
 }
 
-.tab-item.active {
-    color: #ff4d4d;
-    /* デザイン案の赤色 */
-    border-bottom: 2px solid #ff4d4d;
-    margin-bottom: -1px;
+.item-list__tab-link.active {
+    color: #ff5a5f;
+    border-bottom: 2px solid #ff5a5f;
 }
 
-/* 商品グリッド（4列並べる） */
-.item-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
+/* グリッドレイアウト：flexの隙間を一定に保つ */
+.item-list__grid {
+    display: flex;
+    flex-wrap: wrap;
     gap: 20px;
 }
 
-.item-card {
+.item-list__card {
+    /* 4列表示：gap(20px)×3個分=60px を引いて4で割る */
+    width: calc((100% - 60px) / 4);
+    margin-bottom: 30px;
+}
+
+.item-list__link {
     text-decoration: none;
     color: #333;
 }
 
-.item-image {
-    position: relative;
+.item-list__image-wrapper {
+    width: 100%;
     aspect-ratio: 1 / 1;
-    background-color: #f0f0f0;
+    background-color: #f5f5f5;
+    margin: 0 0 10px 0;
+    /* figureタグのデフォルト余白を消す */
     overflow: hidden;
-    border-radius: 4px;
+    position: relative;
 }
 
-.item-image img {
+.item-list__image-wrapper img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
-.item-name {
-    margin-top: 8px;
-    font-size: 14px;
+.item-list__item-name {
+    font-size: 16px;
+    font-weight: normal;
+    /* h2としての重さを調整 */
+    margin: 0;
 }
 
-/* 商品名から下線を消し、文字色を黒（または濃いグレー）にする */
-.item-card a {
-    text-decoration: none;
+/* ==========================================
+   商品詳細画面 (show.blade.php) 専用
+   ========================================== */
+
+.item-detail__container {
+    max-width: 1000px;
+    /* 詳細画面は読みやすさのため少し絞る */
+    margin-top: 50px;
+}
+
+.item-detail__inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 40px;
+    margin-top: 40px;
+}
+
+/* 商品画像（左側） */
+.item-detail__image-box {
+    flex: 0 0 50%;
+    margin: 0;
+}
+
+.item-detail__image-box img {
+    width: 100%;
+    height: auto;
+    background-color: #f5f5f5;
+    object-fit: contain;
+}
+
+/* コンテンツ（右側） */
+.item-detail__content {
+    flex: 1;
+    min-width: 300px;
+}
+
+.item-detail__name {
+    font-size: 32px;
+    margin: 0;
+}
+
+.item-detail__brand {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 15px;
+}
+
+.item-detail__price {
+    font-size: 28px;
+    font-weight: bold;
+    margin: 15px 0;
+}
+
+.item-detail__price .tax-label {
+    font-size: 16px;
+    font-weight: normal;
+}
+
+/* アクションボタン */
+.item-detail__actions {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 25px;
+}
+
+.item-detail__icon-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.item-detail__icon-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    line-height: 0;
+}
+
+.item-detail__icon {
+    width: 32px;
+    height: 32px;
+}
+
+.item-detail__count {
+    font-size: 14px;
     color: #333;
 }
 
-.item-card a:hover {
-    text-decoration: none;
-    opacity: 0.8;
+/* 購入ボタン */
+.item-detail__buy-btn {
+    width: 100%;
+    background-color: #ff5a5f;
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 4px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-bottom: 40px;
 }
 
-.item-name {
-    margin-top: 8px;
-    font-size: 14px;
+/* 各セクション */
+.item-detail__section-title {
+    font-size: 24px;
+    border-bottom: 2px solid #333;
+    padding-bottom: 10px;
+    margin: 40px 0 20px;
+}
+
+/* 情報リストのdl/dt/dd対応 */
+.item-detail__info-list {
+    margin: 0;
+}
+
+.item-detail__info-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.item-detail__label {
+    width: 120px;
     font-weight: bold;
+}
+
+.item-detail__tags,
+.item-detail__condition-text {
+    margin: 0;
+}
+
+.item-detail__category-tag {
+    background-color: #e0e0e0;
+    padding: 5px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+}
+
+/* コメント関連 */
+.item-detail__comment-list {
+    list-style: none;
+    padding: 0;
+}
+
+.item-detail__comment-item {
+    margin-bottom: 25px;
+}
+
+.item-detail__comment-user {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.item-detail__user-avatar {
+    width: 40px;
+    height: 40px;
+    background-color: #d9d9d9;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.item-detail__comment-content {
+    background-color: #f0f0f0;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+/* 投稿フォーム */
+.item-detail__textarea {
+    width: 100%;
+    height: 120px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    resize: none;
+}
+
+.item-detail__comment-btn {
+    width: 100%;
+    background-color: #ff5a5f;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 4px;
+    margin-top: 15px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* レスポンシブ：画面が狭いときは縦に並べる */
+@media screen and (max-width: 1024px) {
+    .item-detail__inner {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .item-detail__image-box,
+    .item-detail__content {
+        width: 100%;
+    }
 }
