@@ -12,3 +12,7 @@ Route::get('/item/{item_id}', [ItemController::class, 'show']);
 
 // コメント投稿（将来的な実装用）
 Route::post('/item/comment', [ItemController::class, 'storeComment'])->middleware('auth');
+
+// コメント送信（P-04）　※ログインしている人だけがコメントできる設定（authミドルウェア）
+Route::post('/item/{item_id}/comment', [ItemController::class, 'comment'])
+    ->middleware('auth');

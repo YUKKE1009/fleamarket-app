@@ -71,19 +71,20 @@
                         <div class="item-detail__comment-user">
                             <div class="item-detail__user-avatar">
                                 @if($comment->user->profile && $comment->user->profile->image_url)
-                                <img src="{{ asset($comment->user->profile->image_url) }}" alt="avatar">
+                                <img src="{{ asset($comment->user->profile->image_url) }}" alt="avatar" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
                                 @endif
                             </div>
                             <span class="item-detail__username">{{ $comment->user->name }}</span>
                         </div>
-                        <div class="item-detail__comment-bubble">
+                        {{-- クラス名を CSS と合わせました --}}
+                        <div class="item-detail__comment-content">
                             <p>{{ $comment->comment }}</p>
                         </div>
                     </li>
                     @endforeach
                 </ul>
 
-                <form action="/item/comment" method="POST" class="item-detail__comment-form">
+                <form action="/item/{{ $item->id }}/comment" method="POST" class="item-detail__comment-form">
                     @csrf
                     <input type="hidden" name="item_id" value="{{ $item->id }}">
                     <label for="comment" class="item-detail__form-label">商品へのコメント</label>

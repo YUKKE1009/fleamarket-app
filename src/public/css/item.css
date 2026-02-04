@@ -1,36 +1,37 @@
 /* ==========================================
-   共通設定 & レスポンシブ基盤
+   1. 共通設定 & レスポンシブ基盤
    ========================================== */
 
 .item-list__container,
 .item-detail__container {
     width: 95%;
-    /* モバイル時の余白 */
     max-width: 1200px;
     /* 基本の最大幅 */
     margin: 0 auto;
     padding: 20px 0;
 }
 
-/* PCサイズ (1400px - 1540px) への対応：さらに幅を広げる */
+/* PCサイズ (1400px以上) への最適化 */
 @media screen and (min-width: 1400px) {
     .item-list__container {
         max-width: 1400px;
     }
 }
 
-/* リストタグの初期化（div乱用防止用） */
+/* リストタグの初期化 */
 .item-list__tab-list,
-.item-list__grid {
+.item-list__grid,
+.item-detail__comment-list {
     list-style: none;
     padding: 0;
     margin: 0;
 }
 
 /* ==========================================
-   商品一覧画面 (index.blade.php) 専用
+   2. 商品一覧画面 (index.blade.php)
    ========================================== */
 
+/* タブメニュー */
 .item-list__tabs {
     border-bottom: 1px solid #ddd;
     margin-bottom: 30px;
@@ -55,7 +56,7 @@
     border-bottom: 2px solid #ff5a5f;
 }
 
-/* グリッドレイアウト：flexの隙間を一定に保つ */
+/* 商品グリッドレイアウト */
 .item-list__grid {
     display: flex;
     flex-wrap: wrap;
@@ -63,7 +64,7 @@
 }
 
 .item-list__card {
-    /* 4列表示：gap(20px)×3個分=60px を引いて4で割る */
+    /* 4列表示計算: (全体 - 隙間20px * 3) / 4 */
     width: calc((100% - 60px) / 4);
     margin-bottom: 30px;
 }
@@ -73,12 +74,12 @@
     color: #333;
 }
 
+/* 商品画像ラッパー */
 .item-list__image-wrapper {
     width: 100%;
     aspect-ratio: 1 / 1;
     background-color: #f5f5f5;
-    margin: 0 0 10px 0;
-    /* figureタグのデフォルト余白を消す */
+    margin-bottom: 10px;
     overflow: hidden;
     position: relative;
 }
@@ -92,17 +93,16 @@
 .item-list__item-name {
     font-size: 16px;
     font-weight: normal;
-    /* h2としての重さを調整 */
     margin: 0;
 }
 
 /* ==========================================
-   商品詳細画面 (show.blade.php) 専用
+   3. 商品詳細画面 (show.blade.php)
    ========================================== */
 
 .item-detail__container {
     max-width: 1000px;
-    /* 詳細画面は読みやすさのため少し絞る */
+    /* 詳細画面は可読性重視で幅を絞る */
     margin-top: 50px;
 }
 
@@ -114,7 +114,7 @@
     margin-top: 40px;
 }
 
-/* 商品画像（左側） */
+/* 左側：商品画像エリア */
 .item-detail__image-box {
     flex: 0 0 50%;
     margin: 0;
@@ -127,7 +127,7 @@
     object-fit: contain;
 }
 
-/* コンテンツ（右側） */
+/* 右側：商品情報・操作エリア */
 .item-detail__content {
     flex: 1;
     min-width: 300px;
@@ -155,7 +155,7 @@
     font-weight: normal;
 }
 
-/* アクションボタン */
+/* 操作ボタン（いいね・コメント） */
 .item-detail__actions {
     display: flex;
     gap: 30px;
@@ -165,6 +165,7 @@
 .item-detail__icon-wrapper {
     display: flex;
     flex-direction: column;
+    /* アイコンと数字を縦並びに */
     align-items: center;
     gap: 4px;
 }
@@ -187,7 +188,7 @@
     color: #333;
 }
 
-/* 購入ボタン */
+/* 購入アクション */
 .item-detail__buy-btn {
     width: 100%;
     background-color: #ff5a5f;
@@ -201,17 +202,12 @@
     margin-bottom: 40px;
 }
 
-/* 各セクション */
+/* 各種見出し・情報リスト */
 .item-detail__section-title {
     font-size: 24px;
     border-bottom: 2px solid #333;
     padding-bottom: 10px;
     margin: 40px 0 20px;
-}
-
-/* 情報リストのdl/dt/dd対応 */
-.item-detail__info-list {
-    margin: 0;
 }
 
 .item-detail__info-row {
@@ -225,11 +221,6 @@
     font-weight: bold;
 }
 
-.item-detail__tags,
-.item-detail__condition-text {
-    margin: 0;
-}
-
 .item-detail__category-tag {
     background-color: #e0e0e0;
     padding: 5px 16px;
@@ -237,11 +228,9 @@
     font-size: 14px;
 }
 
-/* コメント関連 */
-.item-detail__comment-list {
-    list-style: none;
-    padding: 0;
-}
+/* ==========================================
+   4. コメントセクション (show.blade.php)
+   ========================================== */
 
 .item-detail__comment-item {
     margin-bottom: 25px;
@@ -254,21 +243,36 @@
     margin-bottom: 10px;
 }
 
+.item-detail__username {
+    font-weight: bold;
+    font-size: 16px;
+    color: #333;
+}
+
 .item-detail__user-avatar {
     width: 40px;
     height: 40px;
     background-color: #d9d9d9;
     border-radius: 50%;
     flex-shrink: 0;
+    overflow: hidden;
 }
 
+/* 吹き出し風コメントボックス */
 .item-detail__comment-content {
     background-color: #f0f0f0;
-    padding: 15px;
+    /* グレーの背景色 */
+    padding: 15px 20px;
     border-radius: 8px;
+    color: #333;
+    line-height: 1.6;
 }
 
-/* 投稿フォーム */
+.item-detail__comment-content p {
+    margin: 0;
+}
+
+/* コメント投稿フォーム */
 .item-detail__textarea {
     width: 100%;
     height: 120px;
@@ -290,10 +294,14 @@
     cursor: pointer;
 }
 
-/* レスポンシブ：画面が狭いときは縦に並べる */
+/* ==========================================
+   5. レスポンシブ (タブレット・モバイル)
+   ========================================== */
+
 @media screen and (max-width: 1024px) {
     .item-detail__inner {
         flex-direction: column;
+        /* 画像と詳細を縦並びに変更 */
         align-items: center;
     }
 
