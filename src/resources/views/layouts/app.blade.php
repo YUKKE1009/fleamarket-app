@@ -32,7 +32,19 @@
             {{-- ナビゲーション --}}
             <nav class="header__nav">
                 <ul class="nav-list">
+                    @if (Auth::check()) {{-- ログインしている時 --}}
+                    <li class="nav-item">
+                        <form action="/logout" method="POST">
+                            @csrf
+                            <button type="submit" class="nav-link" style="background:none; border:none; cursor:pointer;">
+                                ログアウト
+                            </button>
+                        </form>
+                    </li>
+                    @else {{-- ログインしていない時 --}}
                     <li class="nav-item"><a href="/login" class="nav-link">ログイン</a></li>
+                    @endif
+
                     <li class="nav-item"><a href="/mypage" class="nav-link">マイページ</a></li>
                     <li class="nav-item"><a href="/items/create" class="nav-link btn-sell">出品</a></li>
                 </ul>

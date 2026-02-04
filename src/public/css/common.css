@@ -1,9 +1,24 @@
-/* 基本レイアウト */
+/* ==========================================
+   1. 基本レイアウト
+   ========================================== */
+
 body {
     font-family: 'Helvetica Neue', Arial, sans-serif;
     background-color: #fff;
     color: #333;
+    margin: 0;
+    /* ブラウザ標準の余白をリセット */
 }
+
+.main-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* ==========================================
+   2. ヘッダー (Layouts)
+   ========================================== */
 
 .header {
     background-color: #000;
@@ -19,10 +34,9 @@ body {
     padding: 0 20px;
 }
 
-/* ロゴのサイズ調整 */
+/* ロゴ */
 .header__logo img {
     height: 30px;
-    /* デザインに合わせて調整してください */
     display: block;
 }
 
@@ -38,35 +52,42 @@ body {
     border-radius: 4px;
     border: none;
     font-size: 14px;
+    box-sizing: border-box;
 }
 
-/* ナビゲーション */
+/* ==========================================
+   3. ナビゲーション & ボタン
+   ========================================== */
+
 .nav-list {
     display: flex;
     align-items: center;
     list-style: none;
     gap: 20px;
+    margin: 0;
+    padding: 0;
 }
 
 .nav-link {
     color: #fff;
     text-decoration: none;
     font-size: 14px;
+    transition: opacity 0.3s;
 }
 
-/* 出品ボタン（白抜き） */
+.nav-link:hover {
+    opacity: 0.7;
+}
+
+/* 出品ボタン（白抜きスタイル） */
 .btn-sell {
     background-color: #fff;
     color: #000 !important;
     padding: 6px 20px;
     border-radius: 4px;
     font-weight: bold;
-}
-
-.main-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
+    text-decoration: none;
+    transition: opacity 0.3s;
 }
 
 .btn-sell:hover {

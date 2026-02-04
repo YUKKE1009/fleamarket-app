@@ -16,3 +16,6 @@ Route::post('/item/comment', [ItemController::class, 'storeComment'])->middlewar
 // コメント送信（P-04）　※ログインしている人だけがコメントできる設定（authミドルウェア）
 Route::post('/item/{item_id}/comment', [ItemController::class, 'comment'])
     ->middleware('auth');
+
+// --- 認証関連 (Fortifyを使う場合、基本のルートは自動生成されますが、
+// カスタムが必要な場合はここに追記します)
