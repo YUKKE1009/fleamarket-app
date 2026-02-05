@@ -321,3 +321,37 @@
         width: 100%;
     }
 }
+
+/* ==========================================
+   6. 未ログイン時メッセージエリア (FN020)
+   ========================================== */
+
+/* メッセージボックス本体 */
+.item-detail__comment-login-msg {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    text-align: center;
+}
+
+/* メッセージ内のテキスト */
+.item-detail__comment-login-msg p {
+    margin-bottom: 10px;
+}
+
+/* メッセージ内のログイン誘導ボタン */
+.item-detail__comment-login-btn {
+    display: inline-block;
+    text-decoration: none;
+    background-color: #ff4d4b;
+    padding: 10px 20px;
+    color: white;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+/* ボタンホバー時（マウスを乗せた時）の演出 */
+.item-detail__comment-login-btn:hover {
+    background-color: #e63e3c;
+}

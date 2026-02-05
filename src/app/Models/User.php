@@ -13,7 +13,7 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable;
 
     /**
-     * The attributes that are mass assignable.
+     * 複数代入可能な属性
      *
      * @var array<int, string>
      */
@@ -24,7 +24,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
+     * シリアル化時に非表示にする属性
      *
      * @var array<int, string>
      */
@@ -34,7 +34,7 @@ class User extends Authenticatable
     ];
 
     /**
-     * The attributes that should be cast.
+     * キャストが必要な属性
      *
      * @var array<string, string>
      */
@@ -42,8 +42,12 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    /* ==========================================
+       リレーションシップの定義
+       ========================================== */
+
     /**
-     * プロフィールとのリレーション
+     * ユーザーに紐づくプロフィール情報
      */
     public function profile()
     {

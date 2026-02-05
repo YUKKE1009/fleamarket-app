@@ -9,15 +9,21 @@ class Comment extends Model
 {
     use HasFactory;
 
-    // 保存を許可するカラムを指定
+    /**
+     * 複数代入可能な属性
+     */
     protected $fillable = [
         'user_id',
         'item_id',
         'comment',
     ];
 
+    /* ==========================================
+       リレーションシップの定義
+       ========================================== */
+
     /**
-     * リレーションシップ：コメントはユーザーに属する
+     * コメントを投稿したユーザー
      */
     public function user()
     {
@@ -25,7 +31,7 @@ class Comment extends Model
     }
 
     /**
-     * リレーションシップ：コメントは商品に属する
+     * コメントが投稿された商品
      */
     public function item()
     {

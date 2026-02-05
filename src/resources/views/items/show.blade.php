@@ -9,12 +9,17 @@
 @section('content')
 <main class="item-detail__container">
     <article class="item-detail__inner">
-        {{-- 左側：商品画像 --}}
+
+        {{-- ==========================================
+        左側：商品画像エリア
+        ========================================== --}}
         <figure class="item-detail__image-box">
             <img src="{{ asset($item->image_url) }}" alt="{{ $item->name }}">
         </figure>
 
-        {{-- 右側：詳細情報 --}}
+        {{-- ==========================================
+        右側：詳細情報・操作エリア
+        ========================================== --}}
         <section class="item-detail__content">
             <header class="item-detail__header">
                 <h1 class="item-detail__name">{{ $item->name }}</h1>
@@ -24,30 +29,41 @@
                 </p>
             </header>
 
-            {{-- いいね・コメント数表示 --}}
+            {{-- いいね・コメント数ボタン（FN018 / FN020） --}}
             <div class="item-detail__actions">
                 <div class="item-detail__icon-wrapper">
-                    <button class="item-detail__icon-btn">
-                        <img src="{{ asset('img/icon-heart-defoult.png') }}" alt="いいね" class="item-detail__icon">
-                    </button>
-                    <span class="item-detail__count">3</span>
+                    <form action="/item/{{ $item->id }}/favorite" method="POST" style="display: inline;">
+                        @csrf
+                        <button type="submit" class="item-detail__icon-btn">
+                            @if($item->is_favorited_by_auth_user())
+                            {{-- いいね済み：赤ハート --}}
+                            <img src="{{ asset('img/icon-heart-pink.png') }}" alt="いいね解除" class="item-detail__icon">
+                            @else
+                            {{-- 未登録：デフォルトハート --}}
+                            <img src="{{ asset('img/icon-heart-defoult.png') }}" alt="いいね登録" class="item-detail__icon">
+                            @endif
+                        </button>
+                    </form>
+                    <span class="item-detail__count">{{ count($item->favorites) }}</span>
                 </div>
+
                 <div class="item-detail__icon-wrapper">
                     <div class="item-detail__icon-btn">
                         <img src="{{ asset('img/icon-comment.png') }}" alt="コメント" class="item-detail__icon">
                     </div>
-                    {{-- FN020-3: コメント数の増加表示を確認済み --}}
                     <span class="item-detail__count">{{ count($item->comments) }}</span>
                 </div>
             </div>
 
             <button class="item-detail__buy-btn" onclick="location.href='/purchase/{{ $item->id }}'">購入手続きへ</button>
 
+            {{-- 商品説明 --}}
             <section class="item-detail__section">
                 <h2 class="item-detail__section-title">商品説明</h2>
                 <p class="item-detail__description">{{ $item->description }}</p>
             </section>
 
+            {{-- 商品詳細タグ情報 --}}
             <section class="item-detail__section">
                 <h2 class="item-detail__section-title">商品の情報</h2>
                 <dl class="item-detail__info-list">
@@ -64,6 +80,9 @@
                 </dl>
             </section>
 
+            {{-- ==========================================
+            コメントセクション
+            ========================================== --}}
             <section class="item-detail__comment-section">
                 <h2 class="item-detail__section-title">コメント({{ count($item->comments) }})</h2>
 
@@ -87,9 +106,8 @@
                     @endforeach
                 </ul>
 
-                {{-- FN020-1: ログインユーザーのみフォームを表示、未ログインならメッセージ --}}
+                {{-- 投稿フォーム（認証状態による出し分け） --}}
                 @auth
-                {{-- ログイン済み：投稿フォームを表示 --}}
                 <form action="/item/{{ $item->id }}/comment" method="POST" class="item-detail__comment-form" novalidate>
                     @csrf
                     <label for="comment" class="item-detail__form-label">商品へのコメント</label>
@@ -101,13 +119,15 @@
 
                     <button type="submit" class="item-detail__comment-btn">コメントを送信する</button>
                 </form>
+
                 @else
-                {{-- 未ログイン：ログインを促す案内を表示（ボタンを隠す） --}}
-                <div class="item-detail__comment-login-msg" style="margin-top: 20px; padding: 20px; background-color: #f0f0f0; border-radius: 5px; text-align: center;">
-                    <p style="margin-bottom: 10px;">コメントを投稿するにはログインが必要です。</p>
-                    <a href="/login" class="item-detail__comment-btn" style="display: inline-block; text-decoration: none; background-color: #ff4d4b; padding: 10px 20px; color: white; border-radius: 5px;">ログイン画面へ</a>
+                {{-- 未ログイン：ログインを促す案内を表示 --}}
+                <div class="item-detail__comment-login-msg">
+                    <p>コメントを投稿するにはログインが必要です。</p>
+                    <a href="/login" class="item-detail__comment-login-btn">ログイン画面へ</a>
                 </div>
                 @endauth
+
             </section>
         </section>
     </article>

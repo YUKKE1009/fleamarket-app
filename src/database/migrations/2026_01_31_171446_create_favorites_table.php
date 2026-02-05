@@ -15,9 +15,12 @@ class CreateFavoritesTable extends Migration
     {
         Schema::create('favorites', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('item_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('item_id')->constrained()->onDelete('cascade');
             $table->timestamps();
+
+            // 同じユーザーが同じ商品に二度いいねできないように制約
+            $table->unique(['user_id', 'item_id']);
         });
     }
 
