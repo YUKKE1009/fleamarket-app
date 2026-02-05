@@ -19,3 +19,6 @@ Route::post('/item/{item_id}/comment', [ItemController::class, 'comment'])
 
 // --- 認証関連 (Fortifyを使う場合、基本のルートは自動生成されますが、
 // カスタムが必要な場合はここに追記します)
+
+// ログイン後の404エラー対策：常にトップページへリダイレクト
+Route::redirect('/home', '/');

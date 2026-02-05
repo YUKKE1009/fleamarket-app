@@ -10,7 +10,7 @@
     <div class="auth__inner">
         <h1 class="auth__title">ログイン</h1>
 
-        <form class="auth__form" action="{{ route('login') }}" method="POST">
+        <form class="auth__form" action="{{ route('login') }}" method="POST" novalidate>
             @csrf
             <div class="auth__group">
                 <label class="auth__label" for="email">メールアドレス</label>
@@ -27,6 +27,7 @@
                 <p class="auth__error">{{ $message }}</p>
                 @enderror
             </div>
+
 
             <div class="auth__actions">
                 <button class="auth__btn" type="submit">ログインする</button>

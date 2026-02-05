@@ -1,13 +1,11 @@
 /* ==========================================
    1. 基本レイアウト
    ========================================== */
-
 body {
     font-family: 'Helvetica Neue', Arial, sans-serif;
     background-color: #fff;
     color: #333;
     margin: 0;
-    /* ブラウザ標準の余白をリセット */
 }
 
 .main-container {
@@ -17,9 +15,8 @@ body {
 }
 
 /* ==========================================
-   2. ヘッダー (Layouts)
+   2. ヘッダー (Header Area)
    ========================================== */
-
 .header {
     background-color: #000;
     padding: 15px 0;
@@ -56,9 +53,8 @@ body {
 }
 
 /* ==========================================
-   3. ナビゲーション & ボタン
+   3. ナビゲーション (Navigation)
    ========================================== */
-
 .nav-list {
     display: flex;
     align-items: center;
@@ -76,6 +72,25 @@ body {
 }
 
 .nav-link:hover {
+    opacity: 0.7;
+}
+
+/* ログアウトボタン（リンクと同じスタイルに調整） */
+.logout-button {
+    background: none;
+    border: none;
+    color: #fff;
+    /* ヘッダーが黒なので白に設定 */
+    font-size: 14px;
+    /* nav-linkと合わせる */
+    cursor: pointer;
+    padding: 0;
+    font-family: inherit;
+    text-decoration: none;
+    transition: opacity 0.3s;
+}
+
+.logout-button:hover {
     opacity: 0.7;
 }
 
