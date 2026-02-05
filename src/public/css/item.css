@@ -305,6 +305,12 @@
     cursor: pointer;
 }
 
+.item-detail__form-label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 8px;
+}
+
 /* ==========================================
    5. レスポンシブ (タブレット・モバイル)
    ========================================== */

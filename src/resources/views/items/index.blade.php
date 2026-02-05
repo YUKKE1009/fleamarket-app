@@ -2,36 +2,56 @@
 
 @section('content')
 <main class="item-list__container">
-    <h1 class="visually-hidden">商品一覧</h1> {{-- アクセシビリティ用の隠し見出し --}}
+    <h1 class="visually-hidden">商品一覧</h1>
 
+    {{-- ==========================================
+       タブメニュー (おすすめ / マイリスト)
+       ========================================== --}}
     <nav class="item-list__tabs" aria-label="商品絞り込み">
         <ul class="item-list__tab-list">
+            {{-- おすすめタブ：パラメータがない時、または mylist 以外の時にアクティブ --}}
             <li class="item-list__tab-item">
-                <a href="/" class="item-list__tab-link {{ !request()->get('tab') ? 'active' : '' }}">おすすめ</a>
+                <a href="/?tab=recommend" class="item-list__tab-link {{ request()->get('tab') !== 'mylist' ? 'active' : '' }}">おすすめ</a>
             </li>
+            {{-- マイリストタブ：tab=mylist の時にアクティブ --}}
             <li class="item-list__tab-item">
-                <a href="/?tab=mylist" class="item-list__tab-link {{ request()->get('tab') == 'mylist' ? 'active' : '' }}">マイリスト</a>
+                <a href="/?tab=mylist" class="item-list__tab-link {{ request()->get('tab') === 'mylist' ? 'active' : '' }}">
+                    マイリスト
+                </a>
             </li>
         </ul>
     </nav>
 
+    {{-- ==========================================
+       商品グリッド表示エリア
+       ========================================== --}}
     <section class="item-list__grid-section">
         <ul class="item-list__grid">
-            @foreach ($items as $item)
+            @forelse ($items as $item)
             <li class="item-list__card">
                 <article>
                     <a href="/item/{{ $item->id }}" class="item-list__link">
+                        {{-- 商品画像 & Soldラベル --}}
                         <figure class="item-list__image-wrapper">
                             <img src="{{ asset($item->image_url) }}" alt="{{ $item->name }}">
-                            @if(isset($item->is_sold) && $item->is_sold)
-                            <figcaption class="item-list__sold-label">SOLD</figcaption>
+
+                            {{-- FN015-3: 購入済み商品の判定 --}}
+                            @if(method_exists($item, 'isSold') && $item->isSold())
+                            <figcaption class="item-list__sold-label">Sold</figcaption>
                             @endif
                         </figure>
+
+                        {{-- FN015-2: 商品名 --}}
                         <h2 class="item-list__item-name">{{ $item->name }}</h2>
                     </a>
                 </article>
             </li>
-            @endforeach
+            @empty
+            {{-- 商品が存在しない場合の表示 (FN015-4) --}}
+            <li class="item-list__empty-message" style="list-style: none; text-align: center; width: 100%; margin-top: 50px; color: #888;">
+                表示する商品はありません。
+            </li>
+            @endforelse
         </ul>
     </section>
 </main>

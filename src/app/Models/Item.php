@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use App\Models\SoldItem;
 
 class Item extends Model
 {
@@ -12,6 +13,8 @@ class Item extends Model
 
     /**
      * 複数代入可能な属性
+     *
+     * @var array<int, string>
      */
     protected $fillable = [
         'user_id',
@@ -25,11 +28,11 @@ class Item extends Model
     ];
 
     /* ==========================================
-       リレーションシップの定義
+       リレーションシップ
        ========================================== */
 
     /**
-     * 商品を所有するユーザー (出品者)
+     * 出品者 (User) とのリレーション
      */
     public function user()
     {
@@ -37,7 +40,7 @@ class Item extends Model
     }
 
     /**
-     * 所属するカテゴリー
+     * カテゴリー (Category) とのリレーション
      */
     public function category()
     {
@@ -45,7 +48,7 @@ class Item extends Model
     }
 
     /**
-     * 商品の状態 (新品、目立った傷なし等)
+     * 商品の状態 (Condition) とのリレーション
      */
     public function condition()
     {
@@ -53,7 +56,7 @@ class Item extends Model
     }
 
     /**
-     * 商品に紐づくコメント一覧
+     * コメント一覧 (Comment) とのリレーション
      */
     public function comments()
     {
@@ -61,29 +64,47 @@ class Item extends Model
     }
 
     /**
-     * 商品に紐づくお気に入り一覧
+     * お気に入り一覧 (Favorite) とのリレーション
      */
     public function favorites()
     {
         return $this->hasMany(Favorite::class);
     }
 
+    /**
+     * 購入情報 (SoldItem) とのリレーション
+     */
+    public function soldItem()
+    {
+        return $this->hasOne(SoldItem::class);
+    }
+
     /* ==========================================
-       便利な判定用メソッド (Business Logic)
+       判定用メソッド (ロジック)
        ========================================== */
 
     /**
-     * 現在ログイン中のユーザーがこの商品を「いいね」しているか判定
+     * ログインユーザーがお気に入り登録済みか判定
      *
      * @return bool
      */
     public function is_favorited_by_auth_user()
     {
-        // 未ログイン時は常に false
         if (!Auth::check()) {
             return false;
         }
 
         return $this->favorites()->where('user_id', Auth::id())->exists();
+    }
+
+    /**
+     * 商品が売り切れ(Sold)か判定
+     *
+     * @return bool
+     */
+    public function isSold()
+    {
+        // リレーション先のデータが存在するかチェック
+        return $this->soldItem()->exists();
     }
 }

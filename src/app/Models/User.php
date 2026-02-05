@@ -53,4 +53,14 @@ class User extends Authenticatable
     {
         return $this->hasOne(Profile::class);
     }
+
+    /**
+     * ユーザーがお気に入り登録した商品一覧
+     * (中間テーブル favorites を介して Item モデルと紐付け)
+     */
+    public function favoriteItems()
+    {
+        return $this->belongsToMany(Item::class, 'favorites', 'user_id', 'item_id')
+            ->withTimestamps();
+    }
 }
