@@ -3,22 +3,27 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ItemController;
 
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+*/
 
-//商品一覧画面（トップ画面）（PG01）
-Route::get('/', [ItemController::class, 'index']);
+// 商品一覧画面（トップ画面） (PG01)
+Route::get('/', [ItemController::class, 'index'])->name('item.index');
 
 // 商品詳細画面 (PG05)
-Route::get('/item/{item_id}', [ItemController::class, 'show']);
+Route::get('/item/{item_id}', [ItemController::class, 'show'])->name('item.show');
 
-// コメント投稿（将来的な実装用）
-Route::post('/item/comment', [ItemController::class, 'storeComment'])->middleware('auth');
-
-// コメント送信（P-04）　※ログインしている人だけがコメントできる設定（authミドルウェア）
+// コメント送信処理 (P-04)
+// ※ログイン済みユーザーのみ許可 (auth)
 Route::post('/item/{item_id}/comment', [ItemController::class, 'comment'])
-    ->middleware('auth');
+    ->middleware('auth')
+    ->name('comment.store');
 
-// --- 認証関連 (Fortifyを使う場合、基本のルートは自動生成されますが、
-// カスタムが必要な場合はここに追記します)
+// --------------------------------------------------------------------------
+// 認証・システム関連
+// --------------------------------------------------------------------------
 
 // ログイン後の404エラー対策：常にトップページへリダイレクト
 Route::redirect('/home', '/');

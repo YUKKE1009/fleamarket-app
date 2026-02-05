@@ -24,7 +24,7 @@
                 </p>
             </header>
 
-            {{-- いいね・コメント数 --}}
+            {{-- いいね・コメント数表示 --}}
             <div class="item-detail__actions">
                 <div class="item-detail__icon-wrapper">
                     <button class="item-detail__icon-btn">
@@ -36,6 +36,7 @@
                     <div class="item-detail__icon-btn">
                         <img src="{{ asset('img/icon-comment.png') }}" alt="コメント" class="item-detail__icon">
                     </div>
+                    {{-- FN020-3: コメント数の増加表示を確認済み --}}
                     <span class="item-detail__count">{{ count($item->comments) }}</span>
                 </div>
             </div>
@@ -65,6 +66,8 @@
 
             <section class="item-detail__comment-section">
                 <h2 class="item-detail__section-title">コメント({{ count($item->comments) }})</h2>
+
+                {{-- 投稿済みのコメント一覧 --}}
                 <ul class="item-detail__comment-list">
                     @foreach($item->comments as $comment)
                     <li class="item-detail__comment-item">
@@ -76,7 +79,7 @@
                             </div>
                             <span class="item-detail__username">{{ $comment->user->name }}</span>
                         </div>
-                        {{-- クラス名を CSS と合わせました --}}
+
                         <div class="item-detail__comment-content">
                             <p>{{ $comment->comment }}</p>
                         </div>
@@ -84,13 +87,27 @@
                     @endforeach
                 </ul>
 
-                <form action="/item/{{ $item->id }}/comment" method="POST" class="item-detail__comment-form">
+                {{-- FN020-1: ログインユーザーのみフォームを表示、未ログインならメッセージ --}}
+                @auth
+                {{-- ログイン済み：投稿フォームを表示 --}}
+                <form action="/item/{{ $item->id }}/comment" method="POST" class="item-detail__comment-form" novalidate>
                     @csrf
-                    <input type="hidden" name="item_id" value="{{ $item->id }}">
                     <label for="comment" class="item-detail__form-label">商品へのコメント</label>
-                    <textarea name="comment" id="comment" class="item-detail__textarea"></textarea>
+                    <textarea name="comment" id="comment" class="item-detail__textarea">{{ old('comment') }}</textarea>
+
+                    @error('comment')
+                    <p class="auth__error" style="color: red; font-size: 0.8rem; margin-top: 5px;">{{ $message }}</p>
+                    @enderror
+
                     <button type="submit" class="item-detail__comment-btn">コメントを送信する</button>
                 </form>
+                @else
+                {{-- 未ログイン：ログインを促す案内を表示（ボタンを隠す） --}}
+                <div class="item-detail__comment-login-msg" style="margin-top: 20px; padding: 20px; background-color: #f0f0f0; border-radius: 5px; text-align: center;">
+                    <p style="margin-bottom: 10px;">コメントを投稿するにはログインが必要です。</p>
+                    <a href="/login" class="item-detail__comment-btn" style="display: inline-block; text-decoration: none; background-color: #ff4d4b; padding: 10px 20px; color: white; border-radius: 5px;">ログイン画面へ</a>
+                </div>
+                @endauth
             </section>
         </section>
     </article>
