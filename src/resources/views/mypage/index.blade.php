@@ -10,8 +10,8 @@
     <section class="mypage__profile-section">
         <div class="mypage__profile-header">
             <figure class="mypage__avatar">
-                @if($user->profile && $user->profile->img_url)
-                <img src="{{ asset('storage/' . $user->profile->img_url) }}" alt="プロフィール画像">
+                @if($user->profile && $user->profile->image_url)
+                <img src="{{ asset('storage/' . $user->profile->image_url) }}" alt="プロフィール画像">
                 @else
                 <div class="mypage__avatar-placeholder"></div>
                 @endif
@@ -29,10 +29,12 @@
     <nav class="mypage__nav" aria-label="マイページメニュー">
         <ul class="mypage__tab-list">
             <li class="mypage__tab-item">
-                <a href="/mypage?page=sell" class="mypage__tab-link {{ $page === 'sell' ? 'active' : '' }}">出品した商品</a>
+                <a href="{{ route('mypage.index', ['page' => 'sell']) }}"
+                    class="mypage__tab-link {{ $page === 'sell' ? 'active' : '' }}">出品した商品</a>
             </li>
             <li class="mypage__tab-item">
-                <a href="/mypage?page=buy" class="mypage__tab-link {{ $page === 'buy' ? 'active' : '' }}">購入した商品</a>
+                <a href="{{ route('mypage.index', ['page' => 'buy']) }}"
+                    class="mypage__tab-link {{ $page === 'buy' ? 'active' : '' }}">購入した商品</a>
             </li>
         </ul>
     </nav>

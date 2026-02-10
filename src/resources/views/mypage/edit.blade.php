@@ -18,8 +18,8 @@
         <div class="mypage__img-group">
             <div class="mypage__avatar" id="avatar-container">
                 {{-- DBにパスがあれば表示。なければプレースホルダー --}}
-                @if(Auth::user()->profile && Auth::user()->profile->img_url)
-                <img src="{{ asset('storage/' . Auth::user()->profile->img_url) }}" alt="avatar" id="preview-img">
+                @if(Auth::user()->profile && Auth::user()->profile->image_url)
+                <img src="{{ asset('storage/' . Auth::user()->profile->image_url) }}" alt="avatar" id="preview-img">
                 @else
                 <div class="mypage__avatar-placeholder"></div>
                 @endif
