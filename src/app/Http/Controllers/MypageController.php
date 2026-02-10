@@ -54,30 +54,34 @@ class MypageController extends Controller
      * プロフィール情報の更新実行 (P-09)
      * * @param ProfileRequest $request バリデーション済みリクエスト
      */
+    // app/Http/Controllers/MypageController.php
+
     public function update(ProfileRequest $request)
     {
+    // ここでログイン中のユーザーを取得するのが必須です！
+        /** @var \App\Models\User $user */
         $user = Auth::user();
 
-        // 1. ユーザー名の更新 (usersテーブル)
+        // 1. ユーザー名の更新
         $user->update([
             'name' => $request->name,
         ]);
 
-        // 2. プロフィール情報のデータ準備
+        // 2. 保存用データの作成（DBのカラム名 image_url に合わせる）
         $profileData = [
             'post_code' => $request->post_code,
             'address'   => $request->address,
             'building'  => $request->building,
         ];
 
-        // 3. 画像ファイルの保存 (FN027: storageディレクトリ)
-        if ($request->hasFile('img_url')) {
-            // storage/app/public/profiles に保存し、そのパスを取得
-            $path = $request->file('img_url')->store('profiles', 'public');
-            $profileData['img_url'] = $path;
+        // 3. 画像の保存処理
+        // HTMLのname属性を image_url に変えた場合はここも image_url に！
+        if ($request->hasFile('image_url')) {
+            $path = $request->file('image_url')->store('profiles', 'public');
+            $profileData['image_url'] = $path;
         }
 
-        // 4. プロフィール情報の更新または新規作成 (profilesテーブル)
+        // 4. profilesテーブルの更新
         $user->profile()->updateOrCreate(
             ['user_id' => $user->id],
             $profileData
