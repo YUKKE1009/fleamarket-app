@@ -1,0 +1,143 @@
+/* ==========================================
+   1. 共通設定 & レイアウト基盤
+   ========================================== */
+
+.purchase__container {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.purchase__wrapper {
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+}
+
+/* ==========================================
+   2. 左側：メインエリア（商品・支払い・配送先）
+   ========================================== */
+
+.purchase__main {
+    flex: 1;
+}
+
+/* 商品情報 */
+.purchase__item-info {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.purchase__item-image img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    background-color: #ddd;
+}
+
+.purchase__item-name {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.purchase__item-price {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* 区切り線・見出し */
+.purchase__divider {
+    border: none;
+    border-top: 1px solid #333;
+    margin: 30px 0;
+}
+
+.purchase__section-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+/* 支払い方法選択 */
+.purchase__select-wrapper select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+}
+
+/* 配送先情報 */
+.purchase__address-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.purchase__address-edit {
+    color: #007bff;
+    text-decoration: none;
+}
+
+/* ==========================================
+   3. 右側：サイドバー（小計・購入ボタン）
+   ========================================== */
+
+.purchase__sidebar {
+    width: 350px;
+}
+
+/* 確認カード */
+.purchase__summary-card {
+    border: 2px solid #333;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.purchase__summary-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.purchase__summary-table tr {
+    border-bottom: 1px solid #333;
+}
+
+.purchase__summary-table tr:last-child {
+    border-bottom: none;
+}
+
+.purchase__summary-table th,
+.purchase__summary-table td {
+    padding: 15px 0;
+    text-align: left;
+}
+
+.purchase__summary-table th {
+    font-weight: normal;
+}
+
+.purchase__summary-table td {
+    text-align: right;
+    font-weight: bold;
+}
+
+/* 購入確定アクション */
+.purchase__submit-button {
+    width: 100%;
+    padding: 15px;
+    background-color: #ff6b6b;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.purchase__submit-button:hover {
+    background-color: #ee5b5b;
+}

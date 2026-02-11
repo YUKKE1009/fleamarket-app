@@ -10,13 +10,17 @@ use App\Http\Controllers\MypageController;
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
+|
+| アプリケーションの全ルート定義です。
+| Fortify（認証）関連のルートは自動的に読み込まれます。
+|
 */
 
 /* ==========================================
    1. 公開ルート（未ログインでも閲覧可能）
    ========================================== */
 
-// 商品一覧画面（おすすめ / マイリスト） (PG01, PG02)
+// 商品一覧画面：おすすめ / マイリスト (PG01, PG02)
 Route::get('/', [ItemController::class, 'index'])->name('item.index');
 
 // 商品詳細画面 (PG05)
@@ -29,22 +33,28 @@ Route::get('/item/{item_id}', [ItemController::class, 'show'])->name('item.show'
 
 Route::middleware('auth')->group(function () {
 
-   // --- 商品アクション関連 ---
+   // --- 商品アクション ---
    // コメント送信処理 (P-04)
    Route::post('/item/{item_id}/comment', [ItemController::class, 'comment'])->name('comment.store');
 
    // お気に入り登録・解除 (P-05)
    Route::post('/item/{item_id}/favorite', [FavoriteController::class, 'store'])->name('favorite.store');
 
-   // --- 購入・決済関連 ---
-   // 商品購入画面 (PG06)
+
+   // --- 購入・決済関連 (PG06, P-06) ---
+   // 商品購入画面（購入確認ページ）
    Route::get('/purchase/{item_id}', [PurchaseController::class, 'show'])->name('purchase.show');
 
-   // 購入確定（決済）実行 (P-06)
+   // 購入確定処理（決済実行）
    Route::post('/purchase/{item_id}', [PurchaseController::class, 'store'])->name('purchase.store');
 
+   //住所変更ページ (PG07)
+   Route::get('/purchase/address/{item_id}', [PurchaseController::class, 'editAddress'])->name('purchase.address.edit');
+   // 住所更新実行 (P-07)
+   Route::patch('/purchase/address/{item_id}', [PurchaseController::class, 'updateAddress'])->name('purchase.address.update');
+
    // --- マイページ・プロフィール関連 ---
-   // プロフィール画面 (PG09, PG11, PG12)
+   // プロフィール表示・購入/出品一覧 (PG09, PG11, PG12)
    Route::get('/mypage', [MypageController::class, 'index'])->name('mypage.index');
 
    // プロフィール編集画面 (PG10)
@@ -56,8 +66,8 @@ Route::middleware('auth')->group(function () {
 
 
 /* ==========================================
-   3. その他・リダイレクト設定
+   3. その他・システム設定
    ========================================== */
 
-// Fortify等のデフォルトリダイレクト先(/home)をトップページへ修正
+// ログイン後のデフォルト遷移先(/home)をトップへリダイレクト
 Route::redirect('/home', '/');
