@@ -3,39 +3,84 @@
 namespace App\Http\Controllers;
 
 use App\Models\Item;
+use App\Models\SoldItem;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\PurchaseRequest;
+use Stripe\Stripe;
+use Stripe\Checkout\Session;
 
 class PurchaseController extends Controller
 {
-    // 購入画面の表示 (PG06)
+    /* ==========================================
+       1. 購入画面の表示 (PG06)
+       ========================================== */
     public function show($item_id)
     {
         $item = Item::findOrFail($item_id);
         $user = Auth::user();
-        $profile = $user->profile; // 配送先として使用
+        $profile = $user ? $user->profile : null;
 
         return view('purchase.show', compact('item', 'user', 'profile'));
     }
 
-    // 購入確定（決済） (P-06)
+    /* ==========================================
+       2. 購入確定・Stripeへリダイレクト (P-06)
+       ========================================== */
     public function store(PurchaseRequest $request, $item_id)
     {
-        // ここに決済ロジックとDB保存を書きます（Stripe連携など）
-        // 現時点では、まず画面が表示されることを目指しましょう！
+        $item = Item::findOrFail($item_id);
+
+        Stripe::setApiKey(config('services.stripe.secret'));
+
+        $session = Session::create([
+            'payment_method_types' => [$request->payment_method === 'card' ? 'card' : 'konbini'],
+            'line_items' => [[
+                'price_data' => [
+                    'currency' => 'jpy',
+                    'product_data' => [
+                        'name' => $item->name,
+                    ],
+                    'unit_amount' => $item->price,
+                ],
+                'quantity' => 1,
+            ]],
+            'mode' => 'payment',
+            'success_url' => route('purchase.success', ['item_id' => $item->id]),
+            'cancel_url' => route('purchase.show', ['item_id' => $item->id]),
+        ]);
+
+        return redirect($session->url);
     }
 
-    // 住所変更画面の表示 (PG07)
+    /* ==========================================
+       3. 決済成功後のDB保存処理 (FN022)
+       ========================================== */
+    public function success($item_id)
+    {
+        $item = Item::findOrFail($item_id);
+        $user = Auth::user();
+
+        SoldItem::create([
+            'user_id' => $user->id,
+            'item_id' => $item->id,
+            'payment_method' => 'stripe',
+        ]);
+
+        return redirect()->route('item.index')->with('message', '購入が完了しました');
+    }
+
+    /* ==========================================
+       4. 配送先変更関連 (PG07 / P-07)
+       ========================================== */
     public function editAddress($item_id)
     {
         $item = Item::findOrFail($item_id);
-        return view('address.edit', compact('item')); // resources/views/address/edit.blade.php を探す
+        return view('address.edit', compact('item'));
     }
 
-    // 住所の更新実行 (P-07)
     public function updateAddress(Request $request, $item_id)
     {
-        // ここで一時的な配送先を保存するロジックを書く
+        // 配送先更新ロジックをここに記述予定
     }
-    
 }

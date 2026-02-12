@@ -1,7 +1,6 @@
 /* ==========================================
    1. 共通設定 & レイアウト基盤
    ========================================== */
-
 .item-list__container,
 .item-detail__container {
     width: 95%;
@@ -10,7 +9,6 @@
     padding: 20px 0;
 }
 
-/* リスト・グリッドの初期化 */
 .item-list__tab-list,
 .item-list__grid,
 .item-detail__comment-list {
@@ -22,7 +20,6 @@
 /* ==========================================
    2. 商品一覧画面 (index.blade.php)
    ========================================== */
-
 .item-list__tabs {
     border-bottom: 1px solid #ddd;
     margin-bottom: 30px;
@@ -39,7 +36,6 @@
     color: #333;
     font-weight: bold;
     padding-bottom: 10px;
-    transition: color 0.3s;
 }
 
 .item-list__tab-link.active {
@@ -58,34 +54,50 @@
     margin-bottom: 30px;
 }
 
-.item-list__link {
-    text-decoration: none;
-    color: #333;
-    display: flex;
-    flex-direction: column;
-}
-
 .item-list__image-wrapper {
+    position: relative;
     width: 100%;
     aspect-ratio: 1 / 1;
     background-color: #f5f5f5;
     margin-bottom: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     overflow: hidden;
 }
 
 .item-list__image-wrapper img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.item-list__sold-label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: #ff5a5f;
+    color: #ffffff;
+    padding: 4px 12px;
+    font-weight: bold;
+    font-size: 12px;
+    z-index: 5;
+}
+
+.item-list__item-name {
+    font-size: 15px;
+    color: #333;
+    margin: 0;
+}
+
+.item-list__link {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
 }
 
 /* ==========================================
    3. 商品詳細画面 (show.blade.php)
    ========================================== */
-
 .item-detail__container {
     max-width: 1000px;
     margin-top: 50px;
@@ -104,6 +116,7 @@
 .item-detail__image-box img {
     width: 100%;
     background-color: #f5f5f5;
+    display: block;
 }
 
 .item-detail__content {
@@ -132,7 +145,6 @@
     font-weight: normal;
 }
 
-/* アクション（いいね・コメント） */
 .item-detail__actions {
     display: flex;
     gap: 30px;
@@ -146,43 +158,44 @@
     gap: 4px;
 }
 
-.item-detail__icon-btn {
-    background: none;
+/* ボタン枠線のリセット（詳細度を維持） */
+.item-detail__container .item-detail__icon-btn {
+    background-color: transparent;
     border: none;
-    cursor: pointer;
     padding: 0;
+    cursor: pointer;
+    outline: none;
+    display: block;
 }
 
 .item-detail__icon {
     width: 32px;
     height: 32px;
+    display: block;
 }
 
-/* ボタン共通設定 */
-.item-detail__buy-btn,
-.item-detail__comment-btn {
+/* 購入ボタン */
+.item-detail__container .item-detail__buy-btn {
     width: 100%;
     background-color: #ff5a5f;
-    color: white;
+    color: #ffffff;
+    padding: 15px;
     border: none;
     border-radius: 4px;
-    font-weight: bold;
+    font-weight: 900;
+    font-size: 18px;
     cursor: pointer;
+    margin-bottom: 40px;
+    display: block;
+    text-align: center;
     transition: opacity 0.3s;
 }
 
-.item-detail__buy-btn {
-    padding: 15px;
-    font-size: 18px;
-    margin-bottom: 40px;
-}
-
-.item-detail__buy-btn:hover,
-.item-detail__comment-btn:hover {
+.item-detail__container .item-detail__buy-btn:hover,
+.item-detail__container .item-detail__comment-btn:hover {
     opacity: 0.8;
 }
 
-/* セクション共通 */
 .item-detail__section-title {
     font-size: 24px;
     border-bottom: 2px solid #333;
@@ -210,7 +223,6 @@
 /* ==========================================
    4. コメントセクション
    ========================================== */
-
 .item-detail__comment-item {
     margin-bottom: 25px;
 }
@@ -223,21 +235,25 @@
 }
 
 .item-detail__user-avatar {
-    width: 40px;
-    height: 40px;
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 50% !important;
+    overflow: hidden !important;
     background-color: #ddd;
-    border-radius: 50%;
-    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.item-detail__user-avatar img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    display: block;
 }
 
 .item-detail__comment-content {
     background-color: #f0f0f0;
     padding: 15px;
     border-radius: 8px;
-}
-
-.item-detail__comment-form {
-    margin-top: 30px;
 }
 
 .item-detail__textarea {
@@ -249,15 +265,25 @@
     resize: none;
 }
 
-.item-detail__comment-btn {
+.item-detail__container .item-detail__comment-btn {
+    width: 100%;
+    background-color: #ff5a5f;
+    color: #ffffff;
     padding: 12px;
+    border: none;
+    border-radius: 4px;
     margin-top: 15px;
+    font-weight: 900;
+    font-size: 16px;
+    cursor: pointer;
+    display: block;
+    text-align: center;
+    transition: opacity 0.3s;
 }
 
 /* ==========================================
    5. レスポンシブ
-   ========================================== */
-
+   ========================================= */
 @media screen and (max-width: 1024px) {
     .item-detail__inner {
         flex-direction: column;

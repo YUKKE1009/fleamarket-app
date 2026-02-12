@@ -29,22 +29,20 @@
         <ul class="item-list__grid">
             @forelse ($items as $item)
             <li class="item-list__card">
-                <article>
-                    <a href="/item/{{ $item->id }}" class="item-list__link">
-                        {{-- 商品画像 & Soldラベル --}}
-                        <figure class="item-list__image-wrapper">
-                            <img src="{{ asset($item->image_url) }}" alt="{{ $item->name }}">
+                <a href="/item/{{ $item->id }}" class="item-list__link">
+                    {{-- 1. 画像エリア --}}
+                    <div class="item-list__image-wrapper">
+                        <img src="{{ asset($item->image_url) }}" alt="{{ $item->name }}">
 
-                            {{-- FN015-3: 購入済み商品の判定 --}}
-                            @if(method_exists($item, 'isSold') && $item->isSold())
-                            <figcaption class="item-list__sold-label">Sold</figcaption>
-                            @endif
-                        </figure>
+                        {{-- 売り切れ判定 (FN015-3) --}}
+                        @if(method_exists($item, 'isSold') && $item->isSold())
+                        <div class="item-list__sold-label">Sold</div>
+                        @endif
+                    </div>
 
-                        {{-- FN015-2: 商品名 --}}
-                        <h2 class="item-list__item-name">{{ $item->name }}</h2>
-                    </a>
-                </article>
+                    {{-- 2. 商品名エリア (画像の下に配置) --}}
+                    <p class="item-list__item-name">{{ $item->name }}</p>
+                </a>
             </li>
             @empty
             {{-- 商品が存在しない場合の表示 (FN015-4) --}}

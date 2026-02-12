@@ -6,9 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class SoldItem extends Model
 {
-    protected $fillable = ['item_id', 'user_id'];
+    protected $fillable = ['item_id', 'user_id', 'payment_method'];
 
-    // 商品へのリレーション
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function item()
     {
         return $this->belongsTo(Item::class);

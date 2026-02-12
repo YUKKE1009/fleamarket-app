@@ -1,7 +1,6 @@
 /* ==========================================
    1. 共通設定 & レイアウト基盤
    ========================================== */
-
 .purchase__container {
     max-width: 1000px;
     margin: 40px auto;
@@ -17,7 +16,6 @@
 /* ==========================================
    2. 左側：メインエリア（商品・支払い・配送先）
    ========================================== */
-
 .purchase__main {
     flex: 1;
 }
@@ -46,7 +44,7 @@
     font-weight: bold;
 }
 
-/* 区切り線・見出し */
+/* 区切り線・共通見出し */
 .purchase__divider {
     border: none;
     border-top: 1px solid #333;
@@ -68,7 +66,13 @@
     background-color: #f9f9f9;
 }
 
-/* 配送先情報 */
+/* 配送先情報セクション */
+.purchase__address-section {
+    border-bottom: 1px solid #333;
+    padding-bottom: 30px;
+    margin-bottom: 30px;
+}
+
 .purchase__address-header {
     display: flex;
     justify-content: space-between;
@@ -79,12 +83,16 @@
 .purchase__address-edit {
     color: #007bff;
     text-decoration: none;
+    font-size: 14px;
+}
+
+.purchase__address-edit:hover {
+    text-decoration: underline;
 }
 
 /* ==========================================
    3. 右側：サイドバー（小計・購入ボタン）
    ========================================== */
-
 .purchase__sidebar {
     width: 350px;
 }
@@ -111,7 +119,7 @@
 
 .purchase__summary-table th,
 .purchase__summary-table td {
-    padding: 15px 0;
+    padding: 15px 15px;
     text-align: left;
 }
 
@@ -123,6 +131,8 @@
     text-align: right;
     font-weight: bold;
 }
+
+
 
 /* 購入確定アクション */
 .purchase__submit-button {
