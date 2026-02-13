@@ -56,18 +56,19 @@ class PurchaseController extends Controller
     /* ==========================================
        3. 決済成功後のDB保存処理 (FN022)
        ========================================== */
-    public function success($item_id)
+    public function success(Request $request, $item_id)
     {
         $item = Item::findOrFail($item_id);
-        $user = Auth::user();
 
-        SoldItem::create([
-            'user_id' => $user->id,
-            'item_id' => $item->id,
-            'payment_method' => 'stripe',
-        ]);
+        if (is_null($item->buyer_id)) {
+            $item->update([
+                'buyer_id'       => Auth::id(),
+                'payment_method' => 'stripe',
+            ]);
+        }
 
-        return redirect()->route('item.index')->with('message', '購入が完了しました');
+        return redirect()->route('item.show', ['item_id' => $item->id])
+            ->with('message', '購入が完了しました！');
     }
 
     /* ==========================================

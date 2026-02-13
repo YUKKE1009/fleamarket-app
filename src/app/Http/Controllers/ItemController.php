@@ -16,20 +16,24 @@ class ItemController extends Controller
 
     /**
      * 商品一覧画面を表示
-     * クエリパラメータ 'tab' に応じて表示内容を切り替え
+     * クエリパラメータ 'tab' で「おすすめ」と「マイリスト」を切り替え
      */
     public function index(Request $request)
     {
         $tab = $request->query('tab', 'recommend');
-        $items = collect();
 
         if ($tab === 'mylist') {
-            // マイリスト表示：ログイン中のみお気に入り商品を取得
+            // --- マイリスト表示の処理 ---
             if (Auth::check()) {
-                $items = Auth::user()->favoriteItems;
+                // お気に入りテーブル経由で取得
+                $itemIds = \App\Models\Favorite::where('user_id', Auth::id())->pluck('item_id');
+                $items = Item::whereIn('id', $itemIds)->get();
+            } else {
+                $items = collect();
             }
         } else {
-            // おすすめ表示：全商品を取得
+            // --- おすすめ（通常）表示の処理 ---
+            // ★ここが抜けていたので、全商品を取得するようにします
             $items = Item::all();
         }
 
@@ -42,7 +46,7 @@ class ItemController extends Controller
 
     /**
      * 商品詳細画面を表示
-     * リレーション先を一括取得して表示（Eager Loading）
+     * Eager Loading でコメントやプロフィール情報を一括取得 (N+1問題対策)
      */
     public function show($id)
     {
@@ -58,7 +62,6 @@ class ItemController extends Controller
 
     /**
      * 商品へのコメントを保存
-     * バリデーションは CommentRequest で実施
      */
     public function comment(CommentRequest $request, $item_id)
     {

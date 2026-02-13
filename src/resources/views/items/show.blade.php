@@ -47,7 +47,20 @@
                 </div>
             </div>
 
-            <button type="button" class="item-detail__buy-btn" onclick="location.href='/purchase/{{ $item->id }}'">購入手続きへ</button>
+            {{-- 商品が売り切れ(buyer_idがある)かどうかの判定 --}}
+            @if($item->isSold())
+            <div class="item-detail__sold-wrapper">
+                <button type="button" class="item-detail__buy-btn sold-out" disabled>
+                    売り切れました
+                </button>
+                <p class="item-detail__sold-msg">※この商品はすでに購入されています</p>
+            </div>
+            @else
+            {{-- まだ売れていない場合は通常の購入ボタン --}}
+            <button type="button" class="item-detail__buy-btn" onclick="location.href='/purchase/{{ $item->id }}'">
+                購入手続きへ
+            </button>
+            @endif
 
             {{-- 商品説明 --}}
             <section class="item-detail__section">

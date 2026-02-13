@@ -11,23 +11,34 @@ class Item extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
-        'category_id',
+        'seller_id',
         'condition_id',
         'name',
         'brand',
         'price',
         'description',
-        'image_url'
+        'image_url',
+        'buyer_id',
+        'payment_method',
+        'shipping_postcode',
+        'shipping_address',
+        'shipping_building'
     ];
 
     /* ==========================================
        リレーションシップ
        ========================================== */
 
-    public function user()
+    // 出品者
+    public function seller()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'seller_id');
+    }
+
+    // 購入者
+    public function buyer()
+    {
+        return $this->belongsTo(User::class, 'buyer_id');
     }
 
     public function category()
@@ -49,12 +60,6 @@ class Item extends Model
     {
         return $this->hasMany(Favorite::class);
     }
-
-    public function soldItem()
-    {
-        return $this->hasOne(SoldItem::class);
-    }
-
     /* ==========================================
        判定用メソッド (ロジック)
        ========================================== */
@@ -76,6 +81,6 @@ class Item extends Model
      */
     public function isSold()
     {
-        return $this->soldItem()->exists();
+        return !is_null($this->buyer_id);
     }
 }

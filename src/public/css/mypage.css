@@ -119,7 +119,6 @@
     margin-top: 5px;
 }
 
-/* 入力フォーム共通 */
 .form-group {
     margin-bottom: 25px;
 }
@@ -136,10 +135,8 @@
     border: 1px solid #ccc;
     border-radius: 4px;
     box-sizing: border-box;
-    /* paddingを含めた幅計算 */
 }
 
-/* 更新ボタン */
 .mypage__update-btn {
     width: 100%;
     padding: 15px;
@@ -155,4 +152,64 @@
 
 .mypage__update-btn:hover {
     opacity: 0.9;
+}
+
+/* ==========================================
+   商品一覧グリッド (PG11, PG12)
+   ========================================== */
+.item-list__grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px 20px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.item-list__card {
+    width: calc(25% - 15px);
+    min-width: 160px;
+}
+
+.item-list__link {
+    display: flex;
+    flex-direction: column;
+    /* これが縦並びの肝です */
+    text-decoration: none;
+    color: #333;
+}
+
+.item-list__image-wrapper {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    background-color: #f0f0f0;
+    border-radius: 4px;
+    margin: 0 0 10px 0;
+    /* 画像の下に余白 */
+}
+
+.item-list__image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.item-list__name {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 0;
+    line-height: 1.4;
+    text-align: left;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+}
+
+.mypage__empty-message {
+    width: 100%;
+    text-align: center;
+    color: #666;
+    padding: 40px 0;
 }

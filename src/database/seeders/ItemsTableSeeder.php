@@ -25,21 +25,19 @@ class ItemsTableSeeder extends Seeder
         ];
 
         foreach ($items as $item) {
-            // カテゴリーをnameカラムで検索
             $category = Category::where('name', $item['category'])->first();
 
-            // コンディションをnameカラムで検索 (ここをnameに統一!)
             $condition = Condition::where('name', $item['condition'])->first();
 
             Item::create([
-                'user_id' => 1,
-                'category_id' => $category->id,
+                'seller_id'    => 1,
+                'category_id'  => $category->id,
                 'condition_id' => $condition->id,
-                'name' => $item['name'],
-                'brand' => $item['brand'],
-                'price' => $item['price'],
-                'description' => $item['description'],
-                'image_url' => $item['image_url'],
+                'name'         => $item['name'],
+                'brand'        => $item['brand'],
+                'price'        => $item['price'],
+                'description'  => $item['description'],
+                'image_url'    => $item['image_url'],
             ]);
         }
     }
