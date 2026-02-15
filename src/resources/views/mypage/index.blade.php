@@ -49,6 +49,11 @@
                 <a href="{{ route('item.show', ['item_id' => $item->id]) }}" class="item-list__link">
                     <figure class="item-list__image-wrapper">
                         <img src="{{ asset($item->image_url) }}" alt="{{ $item->name }}">
+
+                        {{-- 売り切れ判定 (商品一覧と同じコード) --}}
+                        @if(method_exists($item, 'isSold') && $item->isSold())
+                        <div class="item-list__sold-label">Sold</div>
+                        @endif
                     </figure>
                     <p class="item-list__name">{{ $item->name }}</p>
                 </a>
