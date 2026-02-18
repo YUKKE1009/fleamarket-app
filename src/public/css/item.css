@@ -280,6 +280,17 @@
     transition: opacity 0.3s;
 }
 
+/* デフォルトのユーザーアイコン（画像がない時用） */
+.user-icon-default {
+    width: 40px;
+    height: 40px;
+    background-color: #ccc;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 /* ==========================================
    5. レスポンシブ
    ========================================= */
@@ -421,7 +432,6 @@ hr {
 }
 
 /* プレビューエリアのスタイル */
-
 .exhibition__image-upload {
     display: flex;
     flex-direction: column;

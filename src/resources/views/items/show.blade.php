@@ -96,8 +96,13 @@
                     <li class="item-detail__comment-item">
                         <div class="item-detail__comment-user">
                             <div class="item-detail__user-avatar">
-                                @if($comment->user->profile?->image_url)
-                                <img src="{{ asset($comment->user->profile->image_url) }}" alt="ユーザーアイコン">
+                                @php
+                                $profileImage = $comment->user->profile?->image_url;
+                                @endphp
+                                @if($profileImage)
+                                <img src="{{ str_starts_with($profileImage, 'http') ? $profileImage : asset('storage/' . $profileImage) }}" alt="ユーザーアイコン">
+                                @else
+                                <div class="user-icon-default"></div>
                                 @endif
                             </div>
                             <span class="item-detail__username">{{ $comment->user->name }}</span>

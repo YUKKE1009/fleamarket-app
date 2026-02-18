@@ -20,24 +20,35 @@ class ItemController extends Controller
      */
     public function index(Request $request)
     {
+        // 1. 検索キーワードと現在のタブを取得
+        $keyword = $request->input('keyword');
         $tab = $request->query('tab', 'recommend');
 
-        if ($tab === 'mylist') {
-            // --- マイリスト表示の処理 ---
-            if (Auth::check()) {
-                // お気に入りテーブル経由で取得
-                $itemIds = \App\Models\Favorite::where('user_id', Auth::id())->pluck('item_id');
-                $items = Item::whereIn('id', $itemIds)->get();
-            } else {
-                $items = collect();
-            }
-        } else {
-            // --- おすすめ（通常）表示の処理 ---
-            // ★ここが抜けていたので、全商品を取得するようにします
-            $items = Item::all();
+        // 2. クエリの基本形を作成
+        $query = Item::query();
+
+        // 3. 商品名で部分一致検索を実行 (FN016-2)
+        if (!empty($keyword)) {
+            $query->where('name', 'LIKE', "%{$keyword}%");
         }
 
-        return view('items.index', compact('items', 'tab'));
+        // 4. タブによる絞り込み (FN016-3のベース)
+        if ($tab === 'mylist') {
+            if (Auth::check()) {
+                // お気に入り（favorites）リレーションを持つ商品に絞り込む
+                $query->whereHas('favorites', function ($q) {
+                    $q->where('user_id', Auth::id());
+                });
+            } else {
+                // 未ログインでマイリストなら表示なし
+                $query->whereRaw('1 = 0');
+            }
+        }
+
+        $items = $query->get();
+
+        // 5. キーワードとタブをViewに渡す（状態保持のため）
+        return view('items.index', compact('items', 'tab', 'keyword'));
     }
 
     /* ==========================================

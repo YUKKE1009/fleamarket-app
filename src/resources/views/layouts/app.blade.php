@@ -21,16 +21,13 @@
                     <img src="{{ asset('img/header-logo.png') }}" alt="COACHTECH">
                 </a>
             </div>
-
-            {{-- ロゴのすぐ下、検索バーの開始位置から --}}
-
             @if(!Request::is('login') && !Request::is('register'))
-            {{-- ログイン画面でも会員登録画面でもない時だけ、以下を表示する --}}
-
             {{-- 検索バー --}}
             <div class="header__search">
-                <form action="/search" method="GET">
-                    <input type="text" name="keyword" placeholder="なにをお探しですか？" class="search-input">
+                {{-- actionを /search から route('item.index') に変更 --}}
+                <form action="{{ route('item.index') }}" method="GET">
+                    <input type="hidden" name="tab" value="{{ request('tab', 'recommend') }}">
+                    <input type="text" name="keyword" placeholder="なにをお探しですか？" class="search-input" value="{{ request('keyword') }}">
                 </form>
             </div>
 
