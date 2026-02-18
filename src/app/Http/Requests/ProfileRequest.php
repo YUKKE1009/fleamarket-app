@@ -20,10 +20,10 @@ class ProfileRequest extends FormRequest
     public function rules()
     {
         return [
-            'image_url'   => 'nullable|image|mimes:jpeg,png', // 拡張子指定
-            'name'      => 'required|string|max:20',        // 20文字以内
-            'post_code' => ['required', 'string', 'regex:/^\d{3}-\d{4}$/'], // ハイフンあり8文字
-            'address'   => 'required|string',               // 入力必須
+            'image_url'   => 'nullable|image|mimes:jpeg,png',
+            'name'      => 'required|string|max:20',
+            'post_code' => ['required', 'string', 'regex:/^\d{3}-\d{4}$/'],
+            'address'   => 'required|string',
             'building'  => 'nullable|string',
         ];
     }

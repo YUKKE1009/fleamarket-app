@@ -16,11 +16,10 @@ class ExhibitionRequest extends FormRequest
         return [
             'name'         => ['required', 'string'],
             'description'  => ['required', 'string', 'max:255'],
-            // mimesは jpeg,png のみ（jpgも許可する場合は追加してください）
             'image_url'    => ['required', 'image', 'mimes:jpeg,png'],
-            'category_ids' => ['required'], // 選択必須
-            'condition_id' => ['required'], // 選択必須
-            'price'        => ['required', 'integer', 'min:0'], // 数値型、0円以上
+            'category_ids' => ['required', 'array', 'min:1'],
+            'condition_id' => ['required'],
+            'price'        => ['required', 'integer', 'min:0'],
         ];
     }
 
@@ -33,6 +32,8 @@ class ExhibitionRequest extends FormRequest
             'image_url.required'    => '商品画像をアップロードしてください',
             'image_url.mimes'       => '指定された拡張子（.jpeg, .png）を選択してください',
             'category_ids.required' => 'カテゴリーを選択してください',
+            'category_ids.array'    => 'カテゴリーの形式が正しくありません',
+            'category_ids.min'      => 'カテゴリーを1つ以上選択してください',
             'condition_id.required' => '商品の状態を選択してください',
             'price.required'        => '商品価格を入力してください',
             'price.integer'         => '商品価格は数値で入力してください',
