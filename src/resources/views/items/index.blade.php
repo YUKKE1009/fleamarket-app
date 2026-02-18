@@ -32,7 +32,7 @@
                 <a href="/item/{{ $item->id }}" class="item-list__link">
                     {{-- 1. 画像エリア --}}
                     <div class="item-list__image-wrapper">
-                        <img src="{{ asset($item->image_url) }}" alt="{{ $item->name }}">
+                        <img src="{{ str_starts_with($item->image_url, 'http') ? $item->image_url : asset('storage/' . $item->image_url) }}" alt="{{ $item->name }}">
 
                         {{-- 売り切れ判定 (FN015-3) --}}
                         @if(method_exists($item, 'isSold') && $item->isSold())

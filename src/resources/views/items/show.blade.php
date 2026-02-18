@@ -11,7 +11,7 @@
     <article class="item-detail__inner">
         {{-- 商品画像エリア --}}
         <figure class="item-detail__image-box">
-            <img src="{{ asset('storage/' . $item->image_url) }}" alt="{{ $item->name }}">
+            <img src="{{ str_starts_with($item->image_url, 'http') ? $item->image_url : asset('storage/' . $item->image_url) }}" alt="{{ $item->name }}">
         </figure>
 
         {{-- 詳細情報・操作エリア --}}
