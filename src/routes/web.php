@@ -41,18 +41,17 @@ Route::middleware('auth')->group(function () {
    // 商品購入画面（購入確認ページ）
    Route::get('/purchase/{item_id}', [PurchaseController::class, 'show'])->name('purchase.show');
 
-   // 購入確定処理（Stripe決済実行）
+   // 購入確定処理（PG06※Stripe決済実行）
    Route::post('/purchase/{item_id}', [PurchaseController::class, 'store'])->name('purchase.store');
 
-   // 決済成功後の処理 (FN022) ★追加
+   // 決済成功後の処理 (P-06)
    Route::get('/purchase/success/{item_id}', [PurchaseController::class, 'success'])->name('purchase.success');
 
    // 住所変更ページ (PG07)
-   Route::get('/purchase/address/{item_id}', [PurchaseController::class, 'editAddress'])->name('purchase.address.edit');
+   Route::get('/purchase/address/{item_id}', [PurchaseController::class, 'edit'])->name('purchase.address.edit');
 
    // 住所更新実行 (P-07)
-   Route::patch('/purchase/address/{item_id}', [PurchaseController::class, 'updateAddress'])->name('purchase.address.update');
-
+   Route::patch('/purchase/address/{item_id}', [PurchaseController::class, 'update'])->name('address.update');
 
    // --- マイページ・プロフィール関連 ---
    // プロフィール表示・購入/出品一覧 (PG09, PG11, PG12)

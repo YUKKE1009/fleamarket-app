@@ -1,5 +1,5 @@
 /* ==========================================
-   1. レイアウト基盤
+1. レイアウト基盤
    ========================================== */
 .purchase__container {
     max-width: 1000px;
@@ -10,12 +10,11 @@
 .purchase__wrapper {
     display: flex;
     gap: 60px;
-    /* 少し広げてゆとりを持たせました */
     align-items: flex-start;
 }
 
 /* ==========================================
-   2. 左側：メインエリア
+2. 左側：メインエリア
    ========================================== */
 .purchase__main {
     flex: 1;
@@ -89,7 +88,7 @@
 }
 
 /* ==========================================
-   3. 右側：サイドバー
+3. 右側：サイドバー
    ========================================== */
 .purchase__sidebar {
     width: 350px;
@@ -139,4 +138,44 @@
 
 .purchase__submit-button:hover {
     opacity: 0.9;
+}
+
+/* ==========================================
+4. 住所変更画面 (PG07)
+   ========================================== */
+.address-edit__title {
+    text-align: center;
+    margin-bottom: 40px;
+    font-size: 24px;
+}
+
+.address-edit__form {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.address-edit__group {
+    margin-bottom: 25px;
+}
+
+.address-edit__label {
+    display: block;
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.address-edit__input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+.address-edit__error {
+    color: #ff5a5f;
+    font-size: 14px;
+    margin-top: 5px;
 }
