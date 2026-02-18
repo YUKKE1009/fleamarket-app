@@ -27,6 +27,11 @@ class ItemController extends Controller
         // 2. クエリの基本形を作成
         $query = Item::query();
 
+        // ログインしている場合、自分が出品した商品を除外する (FN014-4)
+        if (Auth::check()) {
+            $query->where('seller_id', '!=', Auth::id());
+        }
+
         // 3. 商品名で部分一致検索を実行 (FN016-2)
         if (!empty($keyword)) {
             $query->where('name', 'LIKE', "%{$keyword}%");
