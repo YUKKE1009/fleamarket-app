@@ -62,10 +62,19 @@ class PurchaseController extends Controller
     public function success(Request $request, $item_id)
     {
         $item = Item::findOrFail($item_id);
+        $user_id = Auth::id();
 
+        // 1. itemsテーブルの更新（buyer_idを入れる）
         if (is_null($item->buyer_id)) {
             $item->update([
-                'buyer_id'       => Auth::id(),
+                'buyer_id'       => $user_id,
+                'payment_method' => 'stripe',
+            ]);
+
+            // 2. sold_itemsテーブルへのレコード追加
+            SoldItem::create([
+                'user_id' => $user_id,
+                'item_id' => $item->id,
                 'payment_method' => 'stripe',
             ]);
         }
