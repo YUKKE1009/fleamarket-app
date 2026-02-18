@@ -26,10 +26,9 @@ class ItemsTableSeeder extends Seeder
 
         foreach ($items as $item) {
             $category = Category::where('name', $item['category'])->first();
-
             $condition = Condition::where('name', $item['condition'])->first();
 
-            Item::create([
+            $newItem = Item::create([
                 'seller_id'    => 1,
                 'condition_id' => $condition->id,
                 'name'         => $item['name'],
@@ -38,6 +37,10 @@ class ItemsTableSeeder extends Seeder
                 'description'  => $item['description'],
                 'image_url'    => $item['image_url'],
             ]);
+
+            if ($category) {
+                $newItem->categories()->attach($category->id);
+            }
         }
     }
 }

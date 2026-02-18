@@ -62,25 +62,16 @@ class PurchaseController extends Controller
     public function success(Request $request, $item_id)
     {
         $item = Item::findOrFail($item_id);
-        $user_id = Auth::id();
 
-        // 1. itemsテーブルの更新（buyer_idを入れる）
         if (is_null($item->buyer_id)) {
             $item->update([
-                'buyer_id'       => $user_id,
-                'payment_method' => 'stripe',
-            ]);
-
-            // 2. sold_itemsテーブルへのレコード追加
-            SoldItem::create([
-                'user_id' => $user_id,
-                'item_id' => $item->id,
+                'buyer_id'       => Auth::id(),
                 'payment_method' => 'stripe',
             ]);
         }
 
-        return redirect()->route('item.show', ['item_id' => $item->id])
-            ->with('message', '購入が完了しました！');
+        // 修正：引数を 'item.index' に変更。IDを渡す必要もなくなります。
+        return redirect()->route('item.index');
     }
 
     /* ==========================================

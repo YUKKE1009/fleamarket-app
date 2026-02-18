@@ -11,7 +11,7 @@
         <div class="mypage__profile-header">
             <figure class="mypage__avatar">
                 @if($user->profile && $user->profile->image_url)
-                <img src="{{ asset('storage/' . $user->profile->image_url) }}" alt="プロフィール画像">
+                <img src="{{ str_starts_with($user->profile->image_url, 'http') ? $user->profile->image_url : asset('storage/' . $user->profile->image_url) }}" alt="プロフィール画像">
                 @else
                 <div class="mypage__avatar-placeholder"></div>
                 @endif
@@ -48,7 +48,7 @@
             <li class="item-list__card">
                 <a href="{{ route('item.show', ['item_id' => $item->id]) }}" class="item-list__link">
                     <figure class="item-list__image-wrapper">
-                        <img src="{{ asset($item->image_url) }}" alt="{{ $item->name }}">
+                        <img src="{{ str_starts_with($item->image_url, 'http') ? $item->image_url : asset('storage/' . $item->image_url) }}" alt="{{ $item->name }}">
 
                         {{-- 売り切れ判定 (商品一覧と同じコード) --}}
                         @if(method_exists($item, 'isSold') && $item->isSold())

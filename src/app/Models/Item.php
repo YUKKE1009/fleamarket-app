@@ -83,4 +83,14 @@ class Item extends Model
     {
         return !is_null($this->buyer_id);
     }
+
+    /**
+     * 画像パスを自動で調整するメソッド（アクセサ）
+     */
+    public function getImageUrlAttribute($value)
+    {
+        if (empty($value)) return asset('img/no-image.png');
+
+        return str_starts_with($value, 'http') ? $value : asset('storage/' . $value);
+    }
 }

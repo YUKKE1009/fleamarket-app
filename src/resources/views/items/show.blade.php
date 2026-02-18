@@ -76,7 +76,7 @@
                         <dt class="item-detail__label">カテゴリー</dt>
                         <dd class="item-detail__tags">
                             @foreach($item->categories as $category)
-                            <span class="item-detail__category-tag">{{ $category->content }}</span>
+                            <span class="item-detail__category-tag">{{ $category->name }}</span>
                             @endforeach
                         </dd>
                     </div>
