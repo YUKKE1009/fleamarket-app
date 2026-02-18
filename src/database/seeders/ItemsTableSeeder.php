@@ -31,7 +31,6 @@ class ItemsTableSeeder extends Seeder
 
             Item::create([
                 'seller_id'    => 1,
-                'category_id'  => $category->id,
                 'condition_id' => $condition->id,
                 'name'         => $item['name'],
                 'brand'        => $item['brand'],

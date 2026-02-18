@@ -46,15 +46,15 @@
                     </li>
                     @else
                     <li class="nav-item">
-                        <a href="/login" class="nav-link">ログイン</a>
+                        <a href="{{ route('login') }}" class="nav-link">ログイン</a>
                     </li>
                     @endauth
 
                     <li class="nav-item">
-                        <a href="/mypage" class="nav-link">マイページ</a>
+                        <a href="{{ route('mypage.index') }}" class="nav-link">マイページ</a>
                     </li>
                     <li class="nav-item">
-                        <a href="/items/create" class="nav-link btn-sell">出品</a>
+                        <a href="{{ route('exhibition.create') }}" class="nav-link btn-sell">出品</a>
                     </li>
                 </ul>
             </nav>

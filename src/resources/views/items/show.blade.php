@@ -11,7 +11,7 @@
     <article class="item-detail__inner">
         {{-- 商品画像エリア --}}
         <figure class="item-detail__image-box">
-            <img src="{{ asset($item->image_url) }}" alt="{{ $item->name }}">
+            <img src="{{ asset('storage/' . $item->image_url) }}" alt="{{ $item->name }}">
         </figure>
 
         {{-- 詳細情報・操作エリア --}}
@@ -75,7 +75,9 @@
                     <div class="item-detail__info-row">
                         <dt class="item-detail__label">カテゴリー</dt>
                         <dd class="item-detail__tags">
-                            <span class="item-detail__category-tag">{{ $item->category->name }}</span>
+                            @foreach($item->categories as $category)
+                            <span class="item-detail__category-tag">{{ $category->content }}</span>
+                            @endforeach
                         </dd>
                     </div>
                     <div class="item-detail__info-row">

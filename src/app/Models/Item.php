@@ -41,9 +41,9 @@ class Item extends Model
         return $this->belongsTo(User::class, 'buyer_id');
     }
 
-    public function category()
+    public function categories()
     {
-        return $this->belongsTo(Category::class);
+        return $this->belongsToMany(Category::class, 'category_item');
     }
 
     public function condition()

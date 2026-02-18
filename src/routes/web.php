@@ -5,6 +5,7 @@ use App\Http\Controllers\ItemController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\MypageController;
+use App\Http\Controllers\ExhibitionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -62,6 +63,12 @@ Route::middleware('auth')->group(function () {
 
    // プロフ更新実行 (P-09)
    Route::patch('/mypage/profile', [MypageController::class, 'update'])->name('mypage.update');
+
+   // 商品出品画面 (PG08)
+   Route::get('/sell', [ExhibitionController::class, 'create'])->name('exhibition.create');
+
+   // 出品実行 (P-08)
+   Route::post('/sell', [ExhibitionController::class, 'store'])->name('exhibition.store');
 });
 
 
