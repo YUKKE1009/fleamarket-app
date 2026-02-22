@@ -62,17 +62,22 @@ class PurchaseController extends Controller
     public function success(Request $request, $item_id)
     {
         $item = Item::findOrFail($item_id);
+        $user = Auth::user();
+        $profile = $user->profile;
 
         if (is_null($item->buyer_id)) {
             $item->update([
-                'buyer_id'       => Auth::id(),
-                'payment_method' => 'stripe',
+                'buyer_id'          => $user->id,
+                'payment_method'    => 'stripe',
+                'shipping_postcode' => $profile->postcode,
+                'shipping_address'  => $profile->address,
+                'shipping_building' => $profile->building,
             ]);
         }
 
-        // 修正：引数を 'item.index' に変更。IDを渡す必要もなくなります。
         return redirect()->route('item.index');
     }
+
 
     /* ==========================================
        4. 配送先変更関連 (PG07 / P-07)
