@@ -114,9 +114,9 @@
                     @endforeach
                 </ul>
 
-                <form action="{{ Auth::check() ? route('comment.store', $item->id) : route('login') }}"
-                    method="{{ Auth::check() ? 'POST' : 'GET' }}"
-                    class="item-detail__comment-form">
+                {{-- 未ログイン時は form を使わず、ログイン時は POST 送信する --}}
+                @auth
+                <form action="{{ route('comment.store', $item->id) }}" method="POST" class="item-detail__comment-form">
                     @csrf
                     <label for="comment" class="item-detail__form-label">商品へのコメント</label>
                     <textarea name="comment" id="comment" class="item-detail__textarea">{{ old('comment') }}</textarea>
@@ -126,9 +126,21 @@
                     @enderror
 
                     <button type="submit" class="item-detail__comment-btn">
-                        {{ Auth::check() ? 'コメントを送信する' : 'ログインして送信する' }}
+                        コメントを送信する
                     </button>
                 </form>
+                @else
+                <div class="item-detail__comment-form">
+                    <label for="comment" class="item-detail__form-label">商品へのコメント</label>
+                    <textarea name="comment" id="comment" class="item-detail__textarea" readonly></textarea>
+
+                    {{-- ボタンの見た目をしたログイン画面へのリンク --}}
+                    <a href="{{ route('login') }}" class="item-detail__comment-btn item-detail__comment-link">
+                        コメントを送信する
+                    </a>
+                </div>
+                @endauth
+
             </section>
         </section>
     </article>

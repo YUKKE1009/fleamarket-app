@@ -31,7 +31,7 @@
 
             <div class="auth__actions">
                 <button class="auth__btn" type="submit">ログインする</button>
-                <a class="auth__link" href="/register">会員登録はこちら</a>
+                <a class="auth__link" href="{{ route('register') }}">会員登録はこちら</a>
             </div>
         </form>
     </div>

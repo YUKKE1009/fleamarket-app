@@ -5,6 +5,8 @@ namespace App\Providers;
 use App\Actions\Fortify\CreateNewUser;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Fortify\Fortify;
+use App\Http\Requests\LoginRequest;
+use Laravel\Fortify\Http\Requests\LoginRequest as FortifyLoginRequest;
 
 class FortifyServiceProvider extends ServiceProvider
 {
@@ -21,6 +23,9 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Fortifyの内部で使われるLoginRequestを、自作のLoginRequestに差し替え
+        $this->app->bind(FortifyLoginRequest::class, LoginRequest::class);
+
         // 会員登録の実行ロジック (P-01) を紐付け
         Fortify::createUsersUsing(CreateNewUser::class);
 
