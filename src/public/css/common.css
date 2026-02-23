@@ -9,7 +9,7 @@ body {
 }
 
 .main-container {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
     padding: 20px;
 }
@@ -23,12 +23,14 @@ body {
 }
 
 .header__inner {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 0 20px;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 /* ロゴ */
@@ -41,6 +43,7 @@ body {
 .header__search {
     flex: 1;
     margin: 0 40px;
+    min-width: 200px;
 }
 
 .search-input {
