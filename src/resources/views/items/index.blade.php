@@ -4,27 +4,29 @@
 <main class="item-list__container">
     <h1 class="visually-hidden">商品一覧</h1>
 
-    {{-- ==========================================
-       タブメニュー (おすすめ / マイリスト)
-       ========================================== --}}
+    {{-- タブメニュー (おすすめ / マイリスト) --}}
     <nav class="item-list__tabs" aria-label="商品絞り込み">
         <ul class="item-list__tab-list">
-            {{-- おすすめタブ：パラメータがない時、または mylist 以外の時にアクティブ --}}
+            {{-- おすすめタブ --}}
             <li class="item-list__tab-item">
-                <a href="/?tab=recommend" class="item-list__tab-link {{ request()->get('tab') !== 'mylist' ? 'active' : '' }}">おすすめ</a>
+                {{-- keywordパラメータを href に追加 --}}
+                <a href="/?tab=recommend{{ request('keyword') ? '&keyword=' . urlencode(request('keyword')) : '' }}"
+                    class="item-list__tab-link {{ request()->get('tab') !== 'mylist' ? 'active' : '' }}">
+                    おすすめ
+                </a>
             </li>
-            {{-- マイリストタブ：tab=mylist の時にアクティブ --}}
+            {{-- マイリストタブ --}}
             <li class="item-list__tab-item">
-                <a href="/?tab=mylist" class="item-list__tab-link {{ request()->get('tab') === 'mylist' ? 'active' : '' }}">
+                {{-- keywordパラメータを href に追加 --}}
+                <a href="/?tab=mylist{{ request('keyword') ? '&keyword=' . urlencode(request('keyword')) : '' }}"
+                    class="item-list__tab-link {{ request()->get('tab') === 'mylist' ? 'active' : '' }}">
                     マイリスト
                 </a>
             </li>
         </ul>
     </nav>
 
-    {{-- ==========================================
-       商品グリッド表示エリア
-       ========================================== --}}
+    {{-- 商品グリッド表示エリア --}}
     <section class="item-list__grid-section">
         <ul class="item-list__grid">
             @forelse ($items as $item)

@@ -27,6 +27,8 @@
             {{-- アクション（いいね・コメント数） --}}
             <div class="item-detail__actions">
                 <div class="item-detail__icon-wrapper">
+                    @auth
+                    {{-- ログイン時：通常の「いいね」送信フォーム --}}
                     <form action="{{ route('favorite.store', $item->id) }}" method="POST" class="item-detail__favorite-form">
                         @csrf
                         <button type="submit" class="item-detail__icon-btn">
@@ -36,6 +38,12 @@
                             <img src="{{ asset('img/' . $heartIcon) }}" alt="いいね" class="item-detail__icon">
                         </button>
                     </form>
+                    @else
+                    {{-- 未ログイン時：ログイン画面へ飛ばすリンク --}}
+                    <a href="{{ route('login') }}" class="item-detail__icon-btn">
+                        <img src="{{ asset('img/icon-heart-defoult.png') }}" alt="いいね" class="item-detail__icon">
+                    </a>
+                    @endauth
                     <span class="item-detail__count">{{ count($item->favorites) }}</span>
                 </div>
 
@@ -55,11 +63,14 @@
                 </button>
                 <p class="item-detail__sold-msg">※この商品はすでに購入されています</p>
             </div>
+
             @else
-            {{-- まだ売れていない場合は通常の購入ボタン --}}
-            <button type="button" class="item-detail__buy-btn" onclick="location.href='/purchase/{{ $item->id }}'">
+            {{-- 未ログイン時はログイン画面へ、ログイン時は購入画面へ --}}
+            <a href="{{ Auth::check() ? route('purchase.show', ['item_id' => $item->id]) : route('login') }}"
+                class="item-detail__buy-btn"
+                style="text-decoration: none; display: inline-block; text-align: center;">
                 購入手続きへ
-            </button>
+            </a>
             @endif
 
             {{-- 商品説明 --}}
