@@ -9,6 +9,7 @@ return [
     'passwords' => 'users',
     'username' => 'email',
     'email' => 'email',
+    'home' => \App\Providers\RouteServiceProvider::HOME,
     'views' => true, // ここが重要！
     'features' => [
         Features::registration(),
