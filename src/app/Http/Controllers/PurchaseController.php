@@ -65,16 +65,24 @@ class PurchaseController extends Controller
         $user = Auth::user();
         $profile = $user->profile;
 
+        // すでに購入されていないかチェック
         if (is_null($item->buyer_id)) {
+            // 1. itemsテーブルを更新（商品情報を売却済みにし、配送先を保存）
             $item->update([
                 'buyer_id'          => $user->id,
                 'payment_method'    => 'stripe',
-                'shipping_postcode' => $profile->postcode,
+                'shipping_postcode' => $profile->post_code,
                 'shipping_address'  => $profile->address,
                 'shipping_building' => $profile->building,
             ]);
-        }
 
+            // 2. sold_itemsテーブルに購入履歴を追加（★ここを追記）
+            \App\Models\SoldItem::create([
+                'item_id'        => $item->id,
+                'user_id'        => $user->id,
+                'payment_method' => 'stripe',
+            ]);
+        }
         return redirect()->route('item.index');
     }
 
