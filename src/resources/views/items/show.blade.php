@@ -55,20 +55,24 @@
                 </div>
             </div>
 
-            {{-- 商品が売り切れ(buyer_idがある)かどうかの判定 --}}
+            {{-- 購入ボタンエリアの判定 --}}
             @if($item->isSold())
+            {{-- 1. 売り切れの場合 (最優先) --}}
             <div class="item-detail__sold-wrapper">
-                <button type="button" class="item-detail__buy-btn sold-out" disabled>
+                <button type="button" class="item-detail__buy-btn item-detail__buy-btn--disabled" disabled>
                     売り切れました
                 </button>
                 <p class="item-detail__sold-msg">※この商品はすでに購入されています</p>
             </div>
-
+            @elseif(Auth::check() && (int)Auth::id() === (int)$item->seller_id)
+            {{-- 2. 自分の商品の場合 --}}
+            <span class="item-detail__buy-btn item-detail__buy-btn--disabled">
+                自分の商品は購入できません
+            </span>
             @else
-            {{-- 未ログイン時はログイン画面へ、ログイン時は購入画面へ --}}
+            {{-- 3. 他人の商品 且つ 販売中の場合 --}}
             <a href="{{ Auth::check() ? route('purchase.show', ['item_id' => $item->id]) : route('login') }}"
-                class="item-detail__buy-btn"
-                style="text-decoration: none; display: inline-block; text-align: center;">
+                class="item-detail__buy-btn">
                 購入手続きへ
             </a>
             @endif
@@ -140,6 +144,7 @@
                         コメントを送信する
                     </button>
                 </form>
+
                 @else
                 <div class="item-detail__comment-form">
                     <label for="comment" class="item-detail__form-label">商品へのコメント</label>

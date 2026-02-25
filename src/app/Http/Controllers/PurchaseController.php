@@ -20,12 +20,25 @@ class PurchaseController extends Controller
        ========================================== */
     public function show($item_id)
     {
+
+        // 1. まず商品データを取得
         $item = Item::findOrFail($item_id);
+
+        // 【一時的なデバッグコード】画面にIDを表示してプログラムを止める
+        // dd('ログインID:', Auth::id(), '商品の出品者ID:', $item->seller_id);
+
+        // 2. その後に $item を使って自分の商品かチェック
+        if (Auth::check() && (int)$item->seller_id === (int)Auth::id()) {
+            return redirect()->route('item.show', ['item_id' => $item->id]);
+        }
+
+        // 3. その他の情報を取得
         $user = Auth::user();
         $profile = $user ? $user->profile : null;
 
         return view('purchase.show', compact('item', 'user', 'profile'));
     }
+
 
     /* ==========================================
        2. 購入確定・Stripeへリダイレクト (P-06)
@@ -33,6 +46,11 @@ class PurchaseController extends Controller
     public function store(PurchaseRequest $request, $item_id)
     {
         $item = Item::findOrFail($item_id);
+
+        if ((int)$item->user_id === (int)Auth::id()) {
+            return redirect()->route('item.detail', ['item_id' => $item->id])
+                ->with('error', '自分の商品を購入することはできません。');
+        }
 
         Stripe::setApiKey(config('services.stripe.secret'));
 
