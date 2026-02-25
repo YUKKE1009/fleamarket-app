@@ -88,3 +88,50 @@
     text-decoration: none;
     font-size: 14px;
 }
+
+
+/* ==========================================
+   4.メール認証誘導画面用
+   ========================================== */
+.verify-page {
+    text-align: center;
+    margin: 150px auto;
+    padding: 0 20px;
+}
+
+.verify-message {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    margin-bottom: 50px;
+    font-weight: bold;
+}
+
+.verify-btn {
+    display: inline-block;
+    padding: 15px 50px;
+    background: #d9d9d9;
+    border: 1px solid #333;
+    border-radius: 10px;
+    text-decoration: none;
+    color: black;
+    font-size: 1.5rem;
+    font-weight: 900;
+    transition: background 0.3s;
+}
+
+.verify-btn:hover {
+    background: #cccccc;
+}
+
+.resend-form {
+    margin-top: 60px;
+}
+
+.resend-link-button {
+    background: none;
+    border: none;
+    color: #3490dc;
+    text-decoration: none;
+    cursor: pointer;
+    font-size: 1.1rem;
+}

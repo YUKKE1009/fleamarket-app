@@ -6,6 +6,8 @@ use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\MypageController;
 use App\Http\Controllers\ExhibitionController;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,7 +30,7 @@ Route::get('/item/{item_id}', [ItemController::class, 'show'])->name('item.show'
    2. 認証必須ルート（要ログイン）
    ========================================== */
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
 
    // --- 商品アクション ---
    // コメント送信処理 (P-04)
@@ -71,6 +73,22 @@ Route::middleware('auth')->group(function () {
    Route::post('/sell', [ExhibitionController::class, 'store'])->name('exhibition.store');
 });
 
+// 2. メール認証誘導画面の表示 (FN012-2)
+Route::get('/email/verify', function () {
+   return view('auth.verify-email'); // このViewを次に作ります
+})->middleware('auth')->name('verification.notice');
+
+// 3. メール内のリンクを押した時の処理 (FN012-3)
+Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
+   $request->fulfill();
+   return redirect()->route('mypage.edit'); // 認証後はプロフィール設定へ (FN012-4-d)
+})->middleware(['auth', 'signed'])->name('verification.verify');
+
+// 4. 認証メール再送処理 (FN013)
+Route::post('/email/verification-notification', function (Request $request) {
+   $request->user()->sendEmailVerificationNotification();
+   return back()->with('message', '認証メールを再送しました');
+})->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
 /* ==========================================
    3. その他・システム設定
