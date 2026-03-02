@@ -46,26 +46,33 @@ class PurchaseController extends Controller
         $user = Auth::user();
         $profile = $user->profile;
 
-        // 1. 出品者チェック
+        // 支払い方法の日本語変換
+        $paymentMethods = [
+            'card'    => 'クレジットカード',
+            'konbini' => 'コンビニ払い',
+        ];
+        $paymentLabel = $paymentMethods[$request->payment_method] ?? '未定義';
+
+        // 出品者チェック
         if ((int)$item->seller_id === (int)$user->id) {
             return redirect()->route('item.show', ['item_id' => $item->id])
                 ->with('error', '自分の商品を購入することはできません。');
         }
 
-        // 2. 先にDBを更新して「SOLD」にする
+        // 2. DBを更新（ここでSOLDになる）
         $item->update([
             'buyer_id'          => $user->id,
-            'payment_method'    => $request->payment_method, // card または konbini
+            'payment_method'    => $paymentLabel,
             'shipping_postcode' => $profile->post_code,
             'shipping_address'  => $profile->address,
             'shipping_building' => $profile->building,
         ]);
 
-        // 3. sold_itemsテーブルにも記録
+        // 3. 購入履歴を保存
         \App\Models\SoldItem::create([
             'item_id'        => $item->id,
             'user_id'        => $user->id,
-            'payment_method' => $request->payment_method,
+            'payment_method' => $paymentLabel,
         ]);
 
         // 4. Stripeセッション作成
@@ -76,15 +83,14 @@ class PurchaseController extends Controller
             'line_items' => [[
                 'price_data' => [
                     'currency' => 'jpy',
-                    'product_data' => [
-                        'name' => $item->name,
-                    ],
+                    'product_data' => ['name' => $item->name],
                     'unit_amount' => $item->price,
                 ],
                 'quantity' => 1,
             ]],
             'mode' => 'payment',
-            'success_url' => route('item.index'),
+            // 成功時は success メソッドへ飛ばしてメッセージを表示させる
+            'success_url' => route('purchase.success', ['item_id' => $item->id]),
             'cancel_url' => route('purchase.show', ['item_id' => $item->id]),
         ]);
 
@@ -92,38 +98,10 @@ class PurchaseController extends Controller
     }
 
     /* ==========================================
-       3. 決済成功（または注文確定）後のDB保存処理
+       3. 決済成功後の処理（リダイレクトのみ）
        ========================================== */
-    public function success(Request $request, $item_id)
+    public function success()
     {
-        $item = Item::findOrFail($item_id);
-        $user = Auth::user();
-        $profile = $user->profile;
-
-        // セッションから支払い方法を取得（なければデフォルト値を設定）
-        $paymentMethod = session('payment_method', 'stripe');
-
-        // すでに購入されていないかチェック
-        if (is_null($item->buyer_id)) {
-            // 1. itemsテーブルを更新
-            $item->update([
-                'buyer_id'          => $user->id,
-                'payment_method'    => $paymentMethod, // 動的に保存
-                'shipping_postcode' => $profile->post_code,
-                'shipping_address'  => $profile->address,
-                'shipping_building' => $profile->building,
-            ]);
-
-            // 2. sold_itemsテーブルに購入履歴を追加
-            \App\Models\SoldItem::create([
-                'item_id'        => $item->id,
-                'user_id'        => $user->id,
-                'payment_method' => $paymentMethod,
-            ]);
-
-            session()->forget('payment_method');
-        }
-
         return redirect()->route('item.index')->with('message', 'ご購入ありがとうございました！');
     }
 
