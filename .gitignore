@@ -1,2 +1,10 @@
 # MySQL data (Docker)
 docker/mysql/data/
+
+# Laravel env files
+src/.env
+src/.env.testing
+
+# Laravel other
+src/storage/*.key
+src/vendor/
