@@ -10,32 +10,6 @@ use App\Models\Item;
 class FavoriteTest extends TestCase
 {
     use RefreshDatabase;
-
-    /**
-     * ID 8: いいね登録・解除・合計値の反映
-     */
-    public function test_いいねアイコン押下で登録解除と合計値の変化が反映される()
-    {
-        /** @var \App\Models\User $user */
-        $user = User::factory()->create();
-        $item = Item::factory()->create();
-
-        // 1. 登録前の合計値確認
-        $this->actingAs($user)->get("/item/{$item->id}")->assertSee('0');
-
-        // 2. いいね登録
-        $this->actingAs($user)->post("/item/{$item->id}/favorite")->assertStatus(302);
-
-        // 3. 登録後の合計値と「いいね済み（色の変化）」を確認
-        // ※クラス名などは実際のHTMLに合わせて調整してください
-        $response = $this->actingAs($user)->get("/item/{$item->id}");
-        $response->assertSee('1');
-
-        // 4. いいね解除
-        $this->actingAs($user)->post("/item/{$item->id}/favorite")->assertStatus(302);
-        $this->actingAs($user)->get("/item/{$item->id}")->assertSee('0');
-    }
-
     /**
      * ID 5: マイリスト一覧取得（ログイン時・Sold表示・未ログイン時）
      */
@@ -63,4 +37,30 @@ class FavoriteTest extends TestCase
         $responseGuest = $this->get('/?tab=mylist');
         $responseGuest->assertDontSee('いいねした商品');
     }
+
+    /**
+     * ID 8: いいね登録・解除・合計値の反映
+     */
+    public function test_いいねアイコン押下で登録解除と合計値の変化が反映される()
+    {
+        /** @var \App\Models\User $user */
+        $user = User::factory()->create();
+        $item = Item::factory()->create();
+
+        // 1. 登録前の合計値確認
+        $this->actingAs($user)->get("/item/{$item->id}")->assertSee('0');
+
+        // 2. いいね登録
+        $this->actingAs($user)->post("/item/{$item->id}/favorite")->assertStatus(302);
+
+        // 3. 登録後の合計値と「いいね済み（色の変化）」を確認
+        // ※クラス名などは実際のHTMLに合わせて調整してください
+        $response = $this->actingAs($user)->get("/item/{$item->id}");
+        $response->assertSee('1');
+
+        // 4. いいね解除
+        $this->actingAs($user)->post("/item/{$item->id}/favorite")->assertStatus(302);
+        $this->actingAs($user)->get("/item/{$item->id}")->assertSee('0');
+    }
+
 }
