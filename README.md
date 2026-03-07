@@ -58,17 +58,15 @@ php artisan db:seed
 
 開発環境起動後、以下のURLで各機能にアクセス可能です。
 
--商品一覧（ホーム）: http://localhost/
+-**商品一覧（ホーム）**: http://localhost/
 
--ユーザー登録: http://localhost/register
+-**ユーザー登録**: http://localhost/register
 
--ログイン画面: http://localhost/login
+-**ログイン画面**: http://localhost/login
 
--phpMyAdmin (DB管理): http://localhost:8080/
-
-    -ユーザー名: laravel_user
-
-    -パスワード: laravel_pass
+- **phpMyAdmin (DB管理)**: [http://localhost:8080/](http://localhost:8080/)
+    - ユーザー名: `laravel_user`
+    - パスワード: `laravel_pass`
 
 ## 機能一覧
 
