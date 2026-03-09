@@ -20,18 +20,24 @@ class PurchaseController extends Controller
        ========================================== */
     public function show($item_id)
     {
-
         // 1. まず商品データを取得
         $item = Item::findOrFail($item_id);
 
-        // 2. その後に $item を使って自分の商品かチェック
+        // 2. 出品者本人の場合は商品詳細へ戻す
         if (Auth::check() && (int)$item->seller_id === (int)Auth::id()) {
             return redirect()->route('item.show', ['item_id' => $item->id]);
         }
 
-        // 3. その他の情報を取得
+        // 3. ユーザーとプロフィールの取得
         $user = Auth::user();
         $profile = $user ? $user->profile : null;
+
+        // 住所（郵便番号や住所）が登録されていない場合
+        if (!$profile || empty($profile->post_code) || empty($profile->address)) {
+            // routes/web.php で定義した名前に合わせる
+            return redirect()->route('purchase.address.edit', ['item_id' => $item->id])
+                ->with('error', '商品を購入するには住所の登録が必要です。');
+        }
 
         return view('purchase.show', compact('item', 'user', 'profile'));
     }
