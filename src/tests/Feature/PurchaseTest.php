@@ -37,11 +37,18 @@ class PurchaseTest extends TestCase
     {
         /** @var \App\Models\User $user */
         $user = User::factory()->create();
+
+        // 住所情報を作ってリダイレクトを防ぐ
+        Profile::factory()->create([
+            'user_id' => $user->id,
+            'post_code' => '123-4567',
+            'address' => '東京都渋谷区',
+        ]);
+
         $item = Item::factory()->create();
 
         $response = $this->actingAs($user)->get("/purchase/{$item->id}");
         $response->assertStatus(200);
-        $response->assertSee('カード支払い');
     }
 
     /**

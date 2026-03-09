@@ -115,7 +115,7 @@ class ItemTest extends TestCase
         // 3. バリデーション：空送信
         $this->actingAs($user)
             ->post($commentUrl, ['comment' => ''])
-            ->assertSessionHasErrors(['comment']);
+            ->assertSessionHasErrors(['comment' => 'コメントを入力してください']);
 
         // 4. バリデーション：255文字より多い (256文字)
         $this->actingAs($user)
