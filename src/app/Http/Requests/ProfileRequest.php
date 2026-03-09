@@ -36,8 +36,8 @@ class ProfileRequest extends FormRequest
         return [
             'img_url.image'      => '指定されたファイルが画像ではありません。',
             'img_url.mimes'      => '画像の形式はjpegまたはpng形式でアップロードしてください。',
-            'name.required'      => 'お名前を入力してください。',
-            'name.max'           => 'お名前は20文字以内で入力してください。',
+            'name.required'      => 'ユーザー名を入力してください。',
+            'name.max'           => 'ユーザー名は20文字以内で入力してください。',
             'post_code.required' => '郵便番号を入力してください。',
             'post_code.regex'    => '郵便番号はハイフンありの8文字で入力してください。',
             'address.required'   => '住所を入力してください。',
