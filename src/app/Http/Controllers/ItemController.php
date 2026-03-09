@@ -27,8 +27,9 @@ class ItemController extends Controller
         // 2. クエリの基本形を作成
         $query = Item::query();
 
-        // ログインしている場合、自分が出品した商品を除外する (FN014-4)
-        if (Auth::check()) {
+        // ログインしている場合、
+        // 「おすすめタブ」の時だけ自分が出品した商品を除外する（購入不可のため）(FN014-4)
+        if (Auth::check() && $tab !== 'mylist') {
             $query->where('seller_id', '!=', Auth::id());
         }
 
