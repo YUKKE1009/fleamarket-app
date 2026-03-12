@@ -38,5 +38,17 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::loginView(function () {
             return view('auth.login');
         });
+
+        // 会員登録が完了した直後のリダイレクト先を「プロフィール編集画面」に指定
+        $this->app->instance(
+            \Laravel\Fortify\Contracts\RegisterResponse::class,
+            new class implements \Laravel\Fortify\Contracts\RegisterResponse {
+                public function toResponse($request)
+                {
+                    return redirect('/mypage/profile');
+                }
+            }
+        );
     }
+    
 }
