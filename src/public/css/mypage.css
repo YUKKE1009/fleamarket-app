@@ -26,10 +26,18 @@
     overflow: hidden;
 }
 
+.mypage__avatar-placeholder {
+    width: 100%;
+    height: 100%;
+    background-color: #d9d9d9;
+    border-radius: 50%;
+}
+
 .mypage__avatar img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    text-indent: -9999px;
 }
 
 .mypage__username {
