@@ -46,7 +46,11 @@ class MypageController extends Controller
         $user = Auth::user();
         $profile = $user->profile;
 
-        return view('mypage.edit', compact('user', 'profile'));
+        // session() は使わず、old() だけを見ます。
+        // 第2引数も空文字にして、完全にクリーンな状態から始めます。
+        $temp_img_url = old('temp_img_url', '');
+
+        return view('mypage.edit', compact('user', 'profile', 'temp_img_url'));
     }
 
     /**
@@ -56,31 +60,37 @@ class MypageController extends Controller
     {
         /** @var \App\Models\User $user */
         $user = Auth::user();
+        $user->update(['name' => $request->name]);
 
-        // 1. ユーザー名の更新 (usersテーブル)
-        $user->update([
-            'name' => $request->name,
-        ]);
-
-        // 2. プロフィールデータの整理 (profilesテーブル)
         $profileData = [
             'post_code' => $request->post_code,
-            'address'  => $request->address,
-            'building' => $request->building,
+            'address'   => $request->address,
+            'building'  => $request->building,
         ];
 
-        // 3. 画像の保存処理
-        if ($request->hasFile('image_url')) {
-            $path = $request->file('image_url')->store('profiles', 'public');
+        if ($request->hasFile('img_url')) {
+            // 新しくアップロードされた場合
+            $path = $request->file('img_url')->store('profiles', 'public');
             $profileData['image_url'] = $path;
+        } elseif ($request->temp_img_url) {
+            // ★重要：一時保存(tmp)にある画像を、正式な(profiles)フォルダに移動させる
+            $oldPath = $request->temp_img_url; // tmp/xxx.jpg
+            $newPath = str_replace('tmp/', 'profiles/', $oldPath);
+
+            // ファイルを移動（Storageファサードを使うのが理想ですが、簡易的に）
+            if (\Illuminate\Support\Facades\Storage::disk('public')->exists($oldPath)) {
+                \Illuminate\Support\Facades\Storage::disk('public')->copy($oldPath, $newPath);
+                $profileData['image_url'] = $newPath;
+            }
         }
 
-        // 4. profilesテーブルの更新 (user_id で紐付け)
-        // ※profilesテーブルは通常 user_id で紐付けるためここは user_id のままにします
         $user->profile()->updateOrCreate(
             ['user_id' => $user->id],
             $profileData
         );
+
+        // 【完了後、セッションを掃除】
+        session()->forget('temp_img_url');
 
         return redirect()->route('mypage.index')->with('message', 'プロフィールを更新しました');
     }

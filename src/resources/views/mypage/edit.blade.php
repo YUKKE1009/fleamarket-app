@@ -14,22 +14,39 @@
         @csrf
         @method('PATCH')
 
+        {{-- 一時保存した画像パスを保持する --}}
+        <input type="hidden" name="temp_img_url" value="{{ old('temp_img_url', session('temp_img_url')) }}">
+
         {{-- 1. プロフィール画像 (FN027) --}}
         <div class="mypage__img-group">
+
+
             <div class="mypage__avatar" id="avatar-container">
-                {{-- DBにパスがあれば表示。なければプレースホルダー --}}
-                @if(Auth::user()->profile && Auth::user()->profile->image_url)
-                <img src="{{ asset('storage/' . Auth::user()->profile->image_url) }}" alt="avatar" id="preview-img">
+                @php
+                // 優先順位：1.入力エラー時の値 2.セッションの値
+                $displayPath = old('temp_img_url', session('temp_img_url'));
+                @endphp
+
+                @if($displayPath)
+                {{-- 一時保存画像を表示 --}}
+                <img src="{{ asset('storage/' . $displayPath) }}?{{ time() }}" alt="" id="preview-img" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                @elseif(Auth::user()->profile && Auth::user()->profile->image_url)
+                {{-- ★ここを修正！ DBにある画像を表示 --}}
+                <img src="{{ asset('storage/' . Auth::user()->profile->image_url) }}?{{ time() }}" alt="" id="preview-img" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
                 @else
                 <div class="mypage__avatar-placeholder"></div>
                 @endif
             </div>
+
             <label class="mypage__img-label">
                 画像を選択する
-                <input type="file" name="image_url" id="img_url_input" style="display:none;" accept="image/png, image/jpeg">
+                <input type="file" name="img_url" id="img_url_input" style="display:none;" accept="image/png, image/jpeg">
             </label>
         </div>
-        @error('img_url') <p class="error-message">{{ $message }}</p> @enderror
+
+        @error('img_url')
+        <p class="error-message">{{ $message }}</p>
+        @enderror
 
         {{-- 2〜5. 各入力項目 (初期値表示：US008) --}}
         <div class="form-group">
@@ -63,17 +80,18 @@
 
 @push('scripts')
 <script>
-    // ID指定で確実に要素をキャッチするように変更
     const input = document.getElementById('img_url_input');
-    const container = document.getElementById('avatar-container');
+    const container = document.getElementById('avatar-container'); // ここをcontainerに戻す
 
     input.addEventListener('change', function(e) {
         const file = e.target.files[0];
         if (!file) return;
 
+        // ★この数行（value = '' の処理）を丸ごと削除してください！！
+        // これがあると、エラーで戻ってきた時に「どの画像か」を忘れてしまいます。
+
         const reader = new FileReader();
         reader.onload = function(event) {
-            // コンテナの中身を入れ替える
             container.innerHTML = '';
             const img = document.createElement('img');
             img.src = event.target.result;
@@ -83,6 +101,9 @@
             img.style.objectFit = 'cover';
             img.style.borderRadius = '50%';
             container.appendChild(img);
+
+            console.log("Preview updated"); // 念のためログを出す
+
         };
         reader.readAsDataURL(file);
     });
