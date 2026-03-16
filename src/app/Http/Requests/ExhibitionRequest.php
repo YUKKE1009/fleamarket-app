@@ -3,12 +3,13 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
 
 class ExhibitionRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true; // 忘れずにtrueに！
+        return true;
     }
 
     public function rules(): array
@@ -16,12 +17,29 @@ class ExhibitionRequest extends FormRequest
         return [
             'name'         => ['required', 'string'],
             'description'  => ['required', 'string', 'max:255'],
-            'image_url'    => ['required', 'image', 'mimes:jpeg,png'],
+            // temp_img_urlがあればimage_urlは必須にしない
+            'image_url'    => [$this->filled('temp_img_url') ? 'nullable' : 'required', 'image', 'mimes:jpeg,png'],
+            'temp_img_url' => ['nullable', 'string'],
             'category_ids' => ['required', 'array', 'min:1'],
             'condition_id' => ['required'],
             'price'        => ['required', 'integer', 'min:0'],
-            'brand'        =>['nullable', 'string', 'max:255'],
         ];
+    }
+
+    // ★重要：エラーで戻る「直前」に、強制的に画像を保存してセッションに叩き込む
+    protected function failedValidation(Validator $validator)
+    {
+        if ($this->hasFile('image_url')) {
+            // 画像を保存してパスを取得
+            $path = $this->file('image_url')->store('tmp', 'public');
+            // リクエストデータにパスを合流させる
+            $this->merge(['temp_img_url' => $path]);
+        }
+
+        // 入力値をすべてセッションに保存してエラー画面に戻る
+        session()->put('_old_input', $this->all());
+
+        parent::failedValidation($validator);
     }
 
     public function messages(): array

@@ -6,33 +6,43 @@ use App\Models\Item;
 use App\Models\Category;
 use App\Models\Condition;
 use App\Http\Requests\ExhibitionRequest;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage; // ★Storageを追加
 
 class ExhibitionController extends Controller
 {
-    /**
-     * 商品出品画面を表示 (PG08)
-     */
     public function create()
     {
         $categories = Category::all();
         $conditions = Condition::all();
-
         return view('items.create', compact('categories', 'conditions'));
     }
 
-    /**
-     * 商品出品処理を実行 (P-08)
-     */
     public function store(ExhibitionRequest $request)
     {
         $user = Auth::user();
 
-        // 画像の保存処理（storage/app/public/item_images に保存する場合）
-        $imagePath = $request->file('image_url')->store('item_images', 'public');
+        // 1. 画像パスの初期値
+        $imagePath = null;
 
-        // 1. 商品情報の保存
+        // 2. パスの決定：ファイルが直接アップされたか、一時保存(tmp)があるか
+        if ($request->hasFile('image_url')) {
+            $imagePath = $request->file('image_url')->store('item_images', 'public');
+        } elseif ($request->temp_img_url) {
+            $oldPath = $request->temp_img_url;
+            $newPath = str_replace('tmp/', 'item_images/', $oldPath);
+
+            if (Storage::disk('public')->exists($oldPath)) {
+                Storage::disk('public')->move($oldPath, $newPath);
+                $imagePath = $newPath;
+            }
+        }
+
+        if (!$imagePath) {
+            return back()->withErrors(['image_url' => '商品画像をアップロードしてください'])->withInput();
+        }
+
+        // 3. 商品情報の保存（image_url に必ず値が入る状態で実行される）
         $item = Item::create([
             'seller_id'    => $user->id,
             'condition_id' => $request->condition_id,
@@ -43,7 +53,6 @@ class ExhibitionController extends Controller
             'brand'        => $request->brand,
         ]);
 
-        // 2. カテゴリーの紐付け (中間テーブルへの保存)
         $item->categories()->attach($request->category_ids);
 
         return redirect()->route('item.index')->with('message', '商品を出品しました');

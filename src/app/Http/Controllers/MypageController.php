@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use App\Models\Item;
 use App\Http\Requests\ProfileRequest;
 
@@ -18,6 +19,7 @@ class MypageController extends Controller
      */
     public function index(Request $request)
     {
+
         $user = Auth::user();
         $page = $request->query('page', 'sell');
 
@@ -43,12 +45,12 @@ class MypageController extends Controller
      */
     public function edit()
     {
+
         $user = Auth::user();
         $profile = $user->profile;
 
-        // session() は使わず、old() だけを見ます。
-        // 第2引数も空文字にして、完全にクリーンな状態から始めます。
-        $temp_img_url = old('temp_img_url', '');
+        // 名前をプロフィール専用の temp_profile_img に変更
+        $temp_img_url = old('temp_profile_img', '');
 
         return view('mypage.edit', compact('user', 'profile', 'temp_img_url'));
     }
@@ -72,14 +74,14 @@ class MypageController extends Controller
             // 新しくアップロードされた場合
             $path = $request->file('img_url')->store('profiles', 'public');
             $profileData['image_url'] = $path;
-        } elseif ($request->temp_img_url) {
+        } elseif ($request->temp_profile_img) {
             // ★重要：一時保存(tmp)にある画像を、正式な(profiles)フォルダに移動させる
-            $oldPath = $request->temp_img_url; // tmp/xxx.jpg
+            $oldPath = $request->temp_profile_img;// tmp/xxx.jpg
             $newPath = str_replace('tmp/', 'profiles/', $oldPath);
 
             // ファイルを移動（Storageファサードを使うのが理想ですが、簡易的に）
-            if (\Illuminate\Support\Facades\Storage::disk('public')->exists($oldPath)) {
-                \Illuminate\Support\Facades\Storage::disk('public')->copy($oldPath, $newPath);
+            if (Storage::disk('public')->exists($oldPath)) {
+                Storage::disk('public')->move($oldPath, $newPath);
                 $profileData['image_url'] = $newPath;
             }
         }
@@ -88,9 +90,6 @@ class MypageController extends Controller
             ['user_id' => $user->id],
             $profileData
         );
-
-        // 【完了後、セッションを掃除】
-        session()->forget('temp_img_url');
 
         return redirect()->route('mypage.index')->with('message', 'プロフィールを更新しました');
     }

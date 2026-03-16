@@ -15,7 +15,10 @@
         @method('PATCH')
 
         {{-- 一時保存した画像パスを保持する --}}
-        <input type="hidden" name="temp_img_url" value="{{ old('temp_img_url', session('temp_img_url')) }}">
+        <input type="hidden"
+            name="temp_profile_img"
+            id="temp_profile_img"
+            value="{{ old('temp_profile_img') ?? '' }}">
 
         {{-- 1. プロフィール画像 (FN027) --}}
         <div class="mypage__img-group">
@@ -23,16 +26,17 @@
 
             <div class="mypage__avatar" id="avatar-container">
                 @php
-                // 優先順位：1.入力エラー時の値 2.セッションの値
-                $displayPath = old('temp_img_url', session('temp_img_url'));
+                $displayPath = old('temp_profile_img') ?: $temp_img_url;
                 @endphp
 
                 @if($displayPath)
-                {{-- 一時保存画像を表示 --}}
-                <img src="{{ asset('storage/' . $displayPath) }}?{{ time() }}" alt="" id="preview-img" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                <img src="{{ asset('storage/' . $displayPath) }}?{{ time() }}"
+                    id="preview-img"
+                    style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
                 @elseif(Auth::user()->profile && Auth::user()->profile->image_url)
-                {{-- ★ここを修正！ DBにある画像を表示 --}}
-                <img src="{{ asset('storage/' . Auth::user()->profile->image_url) }}?{{ time() }}" alt="" id="preview-img" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                <img src="{{ asset('storage/' . Auth::user()->profile->image_url) }}?{{ time() }}"
+                    id="preview-img"
+                    style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
                 @else
                 <div class="mypage__avatar-placeholder"></div>
                 @endif
@@ -87,23 +91,19 @@
         const file = e.target.files[0];
         if (!file) return;
 
-        // ★この数行（value = '' の処理）を丸ごと削除してください！！
-        // これがあると、エラーで戻ってきた時に「どの画像か」を忘れてしまいます。
-
         const reader = new FileReader();
         reader.onload = function(event) {
+
             container.innerHTML = '';
+
             const img = document.createElement('img');
             img.src = event.target.result;
-            img.id = 'preview-img';
             img.style.width = '100%';
             img.style.height = '100%';
             img.style.objectFit = 'cover';
             img.style.borderRadius = '50%';
+
             container.appendChild(img);
-
-            console.log("Preview updated"); // 念のためログを出す
-
         };
         reader.readAsDataURL(file);
     });
