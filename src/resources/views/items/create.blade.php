@@ -30,7 +30,7 @@
 
                 <div class="image-upload__placeholder">
                     <label for="image_url" class="image-upload__button">画像を選択する</label>
-                    <input type="file" name="image_url" id="image_url" accept="image/jpeg,image/png" hidden onchange="previewImage(this)">
+                    <input type="file" name="image_url" id="image_url" accept="image/jpeg,image/png" hidden onchange="uploadExhibitionImage(this)">
                 </div>
             </div>
             @error('image_url') <p class="error-message">{{ $message }}</p> @enderror
@@ -104,19 +104,48 @@
 </div>
 
 <script>
-    function previewImage(input) {
-        const preview = document.getElementById('image-preview');
+    async function uploadExhibitionImage(input) {
+        // 1. 必要な要素（プレビューエリア、プレビュー画像、一時パス保存用の隠し入力）を取得
+        const previewContainer = document.getElementById('image-preview');
         const previewImg = document.getElementById('preview-img');
         const tempInput = document.getElementById('temp_img_url');
 
-        if (input.files && input.files[0]) {
+        // ファイルが選択されていない場合は処理を終了
+        if (!input.files || !input.files[0]) return;
+
+        const file = input.files[0];
+        const formData = new FormData();
+        formData.append('image', file); // 'image' というキーでファイルをセット
+        formData.append('_token', '{{ csrf_token() }}'); // CSRFトークンを付与
+
+        try {
+            // 2. UploadController（一時保存用）へ送信
+            const response = await fetch('{{ route("exhibition.upload.temp") }}', {
+                method: 'POST',
+                body: formData
+            });
+
+            if (!response.ok) throw new Error('アップロードに失敗しました');
+
+            const data = await response.json();
+
+            // 3. サーバーから返ってきた一時パス（tmp/xxxx.jpg など）を隠し入力にセット
+            if (tempInput) {
+                tempInput.value = data.path;
+            }
+
+            // 4. ブラウザ上でプレビュー画像を表示
             const reader = new FileReader();
             reader.onload = function(e) {
                 previewImg.src = e.target.result;
-                preview.style.display = 'block';
-                if (tempInput) tempInput.value = '';
+                // プレビューエリアを表示（CSSに合わせて display を調整してください）
+                previewContainer.style.display = 'flex';
             }
-            reader.readAsDataURL(input.files[0]);
+            reader.readAsDataURL(file);
+
+        } catch (error) {
+            console.error(error);
+            alert('画像のアップロードに失敗しました。もう一度試してください。');
         }
     }
 </script>

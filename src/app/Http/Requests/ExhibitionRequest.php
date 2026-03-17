@@ -17,26 +17,24 @@ class ExhibitionRequest extends FormRequest
         return [
             'name'         => ['required', 'string'],
             'description'  => ['required', 'string', 'max:255'],
-            // temp_img_urlがあればimage_urlは必須にしない
-            'image_url'    => [$this->filled('temp_img_url') ? 'nullable' : 'required', 'image', 'mimes:jpeg,png'],
+
+            'image_url'    => $this->filled('temp_img_url')
+                ? ['nullable']
+                : ['required', 'image', 'mimes:jpeg,png'],
+
             'temp_img_url' => ['nullable', 'string'],
             'category_ids' => ['required', 'array', 'min:1'],
             'condition_id' => ['required'],
             'price'        => ['required', 'integer', 'min:0'],
         ];
     }
-
-    // ★重要：エラーで戻る「直前」に、強制的に画像を保存してセッションに叩き込む
     protected function failedValidation(Validator $validator)
     {
-        if ($this->hasFile('image_url')) {
-            // 画像を保存してパスを取得
+        if (!$this->temp_img_url && $this->hasFile('image_url')) {
             $path = $this->file('image_url')->store('tmp', 'public');
-            // リクエストデータにパスを合流させる
             $this->merge(['temp_img_url' => $path]);
         }
 
-        // 入力値をすべてセッションに保存してエラー画面に戻る
         session()->put('_old_input', $this->all());
 
         parent::failedValidation($validator);
