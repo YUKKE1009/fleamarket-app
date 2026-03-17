@@ -48,6 +48,9 @@ DB_PASSWORD=laravel_pass
 
 MAIL_FROM_ADDRESS=admin@example.com
 MAIL_FROM_NAME="${APP_NAME}"
+
+STRIPE_PUBLIC_KEY=pk_test_your_public_key_here
+STRIPE_SECRET_KEY=sk_test_your_secret_key_here
 ```
 
 ### 3. Laravel初期化
@@ -57,6 +60,7 @@ php artisan key:generate
 php artisan storage:link
 php artisan migrate
 php artisan db:seed
+php artisan config:clear
 ```
 
 ## 環境開発（主要アクセス先）
