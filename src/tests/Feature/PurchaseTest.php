@@ -13,15 +13,23 @@ class PurchaseTest extends TestCase
     use RefreshDatabase;
 
     /**
-     * ID 10: 商品購入機能（合格済み）
+     * ID 10: 商品購入機能
      */
     public function test_購入完了から一覧およびマイページへの反映まで()
     {
+        // ★ ここを修正：id だけでなく url も返すようにします
+        $mock = \Mockery::mock('alias:Stripe\Checkout\Session');
+        $mock->shouldReceive('create')->andReturn((object)[
+            'id' => 'test_id',
+            'url' => 'http://localhost/mock-checkout' // これを追加！
+        ]);
+
         /** @var \App\Models\User $user */
         $user = User::factory()->create();
         Profile::factory()->create(['user_id' => $user->id]);
         $item = Item::factory()->create(['name' => 'テスト商品', 'seller_id' => User::factory()]);
 
+        // 実行
         $this->actingAs($user)->post("/purchase/{$item->id}", [
             'payment_method' => 'card'
         ])->assertStatus(302);
@@ -31,7 +39,7 @@ class PurchaseTest extends TestCase
     }
 
     /**
-     * ID 11: 支払い方法選択機能（合格済み）
+     * ID 11: 支払い方法選択機能
      */
     public function test_支払い方法が小計画面に反映される()
     {
@@ -61,7 +69,7 @@ class PurchaseTest extends TestCase
         Profile::factory()->create(['user_id' => $user->id]);
         $item = Item::factory()->create();
 
-        // 郵便番号はハイフンありで送信（多くのバリデーションがこれを求めるため）
+        // 郵便番号はハイフンありで送信
         $newAddress = [
             'post_code' => '888-9999',
             'address' => '大阪府大阪市中央区',
@@ -71,24 +79,19 @@ class PurchaseTest extends TestCase
         // 住所更新実行
         $response = $this->actingAs($user)->post("/purchase/address/{$item->id}", $newAddress);
 
-        // もしPOSTがダメならPATCHを試す
         if ($response->status() === 405) {
             $response = $this->actingAs($user)->patch("/purchase/address/{$item->id}", $newAddress);
         }
 
-        // リダイレクトを確認
         $response->assertStatus(302);
 
-        // 【重要】そもそもDBが更新されているかチェック
         $this->assertDatabaseHas('profiles', [
             'user_id' => $user->id,
             'address' => '大阪府大阪市中央区'
         ]);
 
-        // 購入画面を再取得
         $response = $this->actingAs($user)->get("/purchase/{$item->id}");
 
-        // 画面に「888」が含まれているか（ハイフンの有無を問わないように部分一致でチェック）
         $response->assertSee('888');
         $response->assertSee('大阪府大阪市中央区');
     }
