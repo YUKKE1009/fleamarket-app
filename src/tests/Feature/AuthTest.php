@@ -68,7 +68,7 @@ class AuthTest extends TestCase
         $response = $this->post('/login', ['email' => $user->email, 'password' => $password]);
 
         $this->assertAuthenticatedAs($user);
-        $response->assertRedirect('/mypage/profile');
+        $response->assertRedirect('/');
     }
 
     /**
