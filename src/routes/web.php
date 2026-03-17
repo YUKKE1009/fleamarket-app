@@ -73,10 +73,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
    // 出品実行 (P-08)
    Route::post('/sell', [ExhibitionController::class, 'store'])->name('exhibition.store');
 
-   //プロフィール画像の一時保存
-   Route::middleware('auth')->group(function () {
-      Route::post('/upload-temp', [UploadController::class, 'upload'])->name('upload.temp');
-   });
+   // プロフィール画像の一時保存用
+   Route::post('/mypage/profile/upload', [UploadController::class, 'upload'])->name('profile.upload.temp');
+
+   // 出品画像の一時保存用（同じ upload メソッドを使い回します！）
+   Route::post('/sell/upload-temp', [UploadController::class, 'upload'])->name('exhibition.upload.temp');
 
 });
 
