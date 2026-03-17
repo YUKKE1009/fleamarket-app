@@ -44,15 +44,8 @@ class ProfileRequest extends FormRequest
     /**
      * バリデーションエラー時に実行
      */
-    protected function failedValidation(Validator $validator)
+    protected function failedValidation(\Illuminate\Contracts\Validation\Validator $validator)
     {
-        if ($this->hasFile('img_url')) {
-            $path = $this->file('img_url')->store('tmp', 'public');
-            $this->merge([
-                'temp_profile_img' => $path
-            ]);
-        }
-
         parent::failedValidation($validator);
     }
 }

@@ -8,6 +8,7 @@ use App\Http\Controllers\MypageController;
 use App\Http\Controllers\ExhibitionController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
+use App\Http\Controllers\UploadController;
 
 /*
 |--------------------------------------------------------------------------
@@ -71,6 +72,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
    // 出品実行 (P-08)
    Route::post('/sell', [ExhibitionController::class, 'store'])->name('exhibition.store');
+
+   //プロフィール画像の一時保存
+   Route::middleware('auth')->group(function () {
+      Route::post('/upload-temp', [UploadController::class, 'upload'])->name('upload.temp');
+   });
+
 });
 
 // 2. メール認証誘導画面の表示 (FN012-2)
@@ -96,3 +103,6 @@ Route::post('/email/verification-notification', function (Request $request) {
 
 // ログイン後のデフォルト遷移先(/home)をトップへリダイレクト
 Route::redirect('/home', '/');
+
+// routes/web.php(非同期アップロード用)
+Route::post('/upload-temp', [UploadController::class, 'upload'])->name('upload.temp');

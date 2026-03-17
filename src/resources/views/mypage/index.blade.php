@@ -6,6 +6,14 @@
 
 @section('content')
 <main class="mypage__container">
+
+    {{-- フラッシュメッセージ --}}
+    @if (session('message'))
+    <div class="alert-success">
+        {{ session('message') }}
+    </div>
+    @endif
+
     {{-- セクション1：ユーザー基本情報 (FN025) --}}
     <section class="mypage__profile-section">
         <div class="mypage__profile-header">

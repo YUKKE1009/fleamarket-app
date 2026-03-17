@@ -49,7 +49,6 @@ class MypageController extends Controller
         $user = Auth::user();
         $profile = $user->profile;
 
-        // 名前をプロフィール専用の temp_profile_img に変更
         $temp_img_url = old('temp_profile_img', '');
 
         return view('mypage.edit', compact('user', 'profile', 'temp_img_url'));
@@ -58,6 +57,7 @@ class MypageController extends Controller
     /**
      * プロフィール情報の更新実行
      */
+    // プロフィール情報の更新実行
     public function update(ProfileRequest $request)
     {
         /** @var \App\Models\User $user */
@@ -70,20 +70,19 @@ class MypageController extends Controller
             'building'  => $request->building,
         ];
 
-        if ($request->hasFile('img_url')) {
-            // 新しくアップロードされた場合
-            $path = $request->file('img_url')->store('profiles', 'public');
-            $profileData['image_url'] = $path;
-        } elseif ($request->temp_profile_img) {
-            // ★重要：一時保存(tmp)にある画像を、正式な(profiles)フォルダに移動させる
-            $oldPath = $request->temp_profile_img;// tmp/xxx.jpg
+        // 優先順位：1. 非同期で一時保存されたパスがあるか 2. 直接ファイルが送られたか
+        if ($request->temp_profile_img) {
+            $oldPath = $request->temp_profile_img; // tmp/xxx.jpg
             $newPath = str_replace('tmp/', 'profiles/', $oldPath);
 
-            // ファイルを移動（Storageファサードを使うのが理想ですが、簡易的に）
             if (Storage::disk('public')->exists($oldPath)) {
                 Storage::disk('public')->move($oldPath, $newPath);
                 $profileData['image_url'] = $newPath;
             }
+        } elseif ($request->hasFile('img_url')) {
+            // JSが動かなかった場合などの予備
+            $path = $request->file('img_url')->store('profiles', 'public');
+            $profileData['image_url'] = $path;
         }
 
         $user->profile()->updateOrCreate(

@@ -18,7 +18,7 @@
         <input type="hidden"
             name="temp_profile_img"
             id="temp_profile_img"
-            value="{{ old('temp_profile_img') ?? '' }}">
+            value="{{ old('temp_profile_img', $temp_img_url ?? '') }}">
 
         {{-- 1. プロフィール画像 (FN027) --}}
         <div class="mypage__img-group">
@@ -85,27 +85,53 @@
 @push('scripts')
 <script>
     const input = document.getElementById('img_url_input');
-    const container = document.getElementById('avatar-container'); // ここをcontainerに戻す
+    const container = document.getElementById('avatar-container');
+    const tempInput = document.getElementById('temp_profile_img'); // 隠し入力を取得
 
-    input.addEventListener('change', function(e) {
+    input.addEventListener('change', async function(e) {
         const file = e.target.files[0];
         if (!file) return;
 
-        const reader = new FileReader();
-        reader.onload = function(event) {
+        // --- ここから非同期アップロード処理 ---
+        const formData = new FormData();
+        formData.append('image', file);
+        formData.append('_token', '{{ csrf_token() }}'); // CSRFトークンを忘れずに
 
-            container.innerHTML = '';
+        try {
+            // 1. 裏でUploadControllerに画像を飛ばす
+            const response = await fetch('{{ route("upload.temp") }}', {
+                method: 'POST',
+                body: formData
+            });
 
-            const img = document.createElement('img');
-            img.src = event.target.result;
-            img.style.width = '100%';
-            img.style.height = '100%';
-            img.style.objectFit = 'cover';
-            img.style.borderRadius = '50%';
+            if (!response.ok) throw new Error('アップロード失敗');
 
-            container.appendChild(img);
-        };
-        reader.readAsDataURL(file);
+            const data = await response.json();
+
+            // 2. サーバーから返ってきた「tmp/xxx.png」というパスを隠し入力(hidden)にセット！
+            // これで、バリデーションエラーで戻ってきても old() でこのパスが残ります。
+            tempInput.value = data.path;
+
+            // 3. 画面上のプレビュー表示（既存の処理）
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                container.innerHTML = '';
+                const img = document.createElement('img');
+                img.src = event.target.result;
+                img.style.width = '100%';
+                img.style.height = '100%';
+                img.style.objectFit = 'cover';
+                img.style.borderRadius = '50%';
+                container.appendChild(img);
+            };
+            reader.readAsDataURL(file);
+
+            console.log('一時保存パスを取得しました:', data.path);
+
+        } catch (error) {
+            console.error(error);
+            alert('画像のアップロードに失敗しました。');
+        }
     });
 </script>
 @endpush
