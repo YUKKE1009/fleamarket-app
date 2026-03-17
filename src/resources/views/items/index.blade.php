@@ -4,6 +4,13 @@
 <main class="item-list__container">
     <h1 class="visually-hidden">商品一覧</h1>
 
+    {{-- フラッシュメッセージの表示 --}}
+    @if (session('message'))
+    <div class="alert-success">
+        {{ session('message') }}
+    </div>
+    @endif
+
     {{-- タブメニュー (おすすめ / マイリスト) --}}
     <nav class="item-list__tabs" aria-label="商品絞り込み">
         <ul class="item-list__tab-list">
