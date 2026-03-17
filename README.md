@@ -45,6 +45,9 @@ DB_PORT=3306
 DB_DATABASE=fleamarket_db
 DB_USERNAME=laravel_user
 DB_PASSWORD=laravel_pass
+
+MAIL_FROM_ADDRESS=admin@example.com
+MAIL_FROM_NAME="${APP_NAME}"
 ```
 
 ### 3. Laravel初期化
@@ -121,9 +124,6 @@ sed -i 's/DB_DATABASE=fleamarket_db/DB_DATABASE=demo_test/g' .env.testing
 # Stripeのダミーキーを追記（テストコード内でモック化しているため値は任意でOK）
 echo "STRIPE_PUBLIC_KEY=pk_test_sample" >> .env.testing
 echo "STRIPE_SECRET_KEY=sk_test_sample" >> .env.testing
-# メール送信エラーを防ぐための設定
-echo "MAIL_MAILER=log" >> .env.testing
-echo "MAIL_FROM_ADDRESS=admin@example.com" >> .env.testing
 ```
 
 5. テストの実行
