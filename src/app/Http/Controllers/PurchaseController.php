@@ -3,9 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Item;
-use App\Models\SoldItem;
-use App\Models\User;
-use App\Models\Profile;
 use App\Http\Requests\PurchaseRequest;
 use App\Http\Requests\AddressRequest;
 use Illuminate\Http\Request;
